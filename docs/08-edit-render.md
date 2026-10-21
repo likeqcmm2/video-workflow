@@ -28,10 +28,34 @@ render: start it in the background and keep working (sources, report, reviewing 
 - Chapter cards are your `design.chapter_card.gfx`; fades/dissolves come from `design.transitions` and shot options.
 
 ## Graphics and animation (built for this film — the engine ships no styles)
-Two ways to make non-footage pictures; choose per shot by what the idea needs, not by habit:
+**Tool priority: Remotion + SVG first; Python only when Remotion cannot meet a concrete requirement.**
+This applies to simple graphics as well as complex motion: maps, routes, highlighted countries, charts,
+labels, timelines, documents, diagrams, title/chapter cards and overlays. Do not choose Python merely
+because this repo already has helpers or because a scene is simple. Install Node/Remotion dependencies
+when missing. Record any fallback's requirement, attempted Remotion approach and capability gap in
+PROGRESS.md before using Python or another specialist authoring tool.
 
-**1. Code graphics — `custom_gfx.py`** (`gfx:<name>`; start from templates/custom_gfx.template.py).
-Good for: maps, charts, timelines, documents, diagrams, cards, labels — anything data-driven or text-heavy.
+### Preferred authoring workflow — Remotion + SVG
+- Build each film's own React/TypeScript components; use SVG for geographic outlines, paths, labels,
+  chart geometry and diagrams. Animate against the frame number so rendering is deterministic.
+- For maps, use geographically correct boundary data (for example Natural Earth), an appropriate projection,
+  and narration-timed highlights, routes, labels and camera zoom/pan. Tool choice does not replace fact checks.
+- Keep source under `assets/anim/<scene-name>/` and render output clips under `assets/anim/`; preserve sources
+  so fixes can be rendered again. A static graphic can be a held Remotion scene.
+- Reference full-frame clips using `VIS: anim:assets/anim/map_route.mp4 @0:00.0`; reference transparent
+  overlays using `overlay=anim:assets/anim/map_labels.webm`. Follow the clip requirements below.
+- Inspect representative frames (entrance, middle and exit) for legibility, missing glyphs, overlap and
+  subtitle safe area. The engine cannot measure text inside pre-rendered clips.
+- Built-in automatic chapter cards currently call a `g_<name>` function. Keep that function as a thin
+  adapter loading frames rendered by Remotion, or change the integration explicitly. The adapter is engine
+  glue, not permission to author chapter-card visuals in Python. The renderer's existing ASS subtitles,
+  credits, stamps and lower thirds remain engine text layers.
+
+### Supported integration paths
+
+**Python fallback only — `custom_gfx.py`** (`gfx:<name>`; start from templates/custom_gfx.template.py).
+Use only after documenting a requirement Remotion cannot meet; maps, charts and text-heavy graphics
+are still Remotion + SVG first. The following APIs describe the fallback, not the default workflow.
 - Primitives (`vf.gfx.core`): `canvas`, `text` (always — QA measures its box), `fit_font`, `ramp`/`ease`/`mix`,
   `partial_line`, `photo_bg`, `C.<palette key>`, `F(<font role>, size)`.
 - Technical helpers (`vf.gfx.kit`): `shapes()` + `Projector` (Natural Earth maps: world, ISO3 list, US lower 48,
@@ -43,9 +67,10 @@ Good for: maps, charts, timelines, documents, diagrams, cards, labels — anythi
   render a lot — cache static layers with `functools.lru_cache` and only draw what moves.
 - Reference for the quality bar (not a style to copy): `examples/challenger/custom_gfx.py`.
 
-**2. Animation clips — `anim:<file>`** rendered with a dedicated tool (Manim, Remotion, Motion Canvas, Blender,
-Three.js/Puppeteer capture, After Effects, Lottie → video…).
-Good for: 3D, particles, camera moves, physical simulation, long continuous animated explanations.
+**Preferred clip integration — `anim:<file>`** rendered with Remotion + SVG.
+Use a specialist tool (Blender, Three.js, Manim, etc.) only for a documented requirement Remotion cannot
+meet; Python-based tools follow the same fallback rule. Clips support simple graphics, camera moves,
+long explanations and complex animation alike.
 Technical requirements (each one cost time somewhere):
 - 1920×1080 (or the project size), same fps as the project (default 30; other rates are resampled — judder).
 - Length ≥ the shot (clips are never looped; a short clip is slowed down and preflight errors < 0.6×).

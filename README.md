@@ -79,6 +79,10 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
 - **Tỷ lệ footage thật / đồ hoạ** là khoảng min–max cho **toàn bộ video**, do AI chọn theo thể loại
   (`director.real_pct`). Từng chương tự do: có chương toàn tư liệu, có chương toàn đồ hoạ/animation, miễn
   visual hợp lời đọc và được sắp xếp có chủ đích. Preflight chỉ in tỷ lệ từng chương để tham khảo.
+- **Ưu tiên công cụ đồ hoạ/animation**: dùng **Remotion + SVG trước**, kể cả bản đồ, biểu đồ, timeline,
+  thẻ chữ và overlay đơn giản. Python chỉ khi Remotion không đáp ứng được yêu cầu cụ thể; ghi rõ yêu cầu,
+  cách đã thử và giới hạn vào PROGRESS.md. Thiếu cài đặt hoặc có sẵn helper Python không phải lý do chuyển.
+  Clip Remotion được đưa vào engine bằng `anim:` / `overlay=anim:` (docs/08).
 - **Animation ngoài** (Manim, Remotion, Blender, Three.js…) dùng được như clip `anim:`, kể cả lớp phủ có kênh
   alpha; chuyển cảnh fade/dissolve; nhiều bảng màu (grade) theo chương hoặc từng shot.
 

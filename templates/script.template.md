@@ -7,7 +7,8 @@ See docs/02-director.md.)
 
 # Design system
 (Phase 7 - designed for this film: grade(s), palette, fonts, title/chapter/lower-third/credit styles, graphics and
-animation approach, motion, transitions. See docs/07-design-system.md.)
+animation approach (Remotion + SVG first; Python only for documented Remotion capability gaps), motion,
+transitions. See docs/07-design-system.md and docs/08-edit-render.md.)
 
 # Script
 <!-- Format: docs/05-script-format.md. NAR = narration (digits OK), VIS = one line per shot. -->

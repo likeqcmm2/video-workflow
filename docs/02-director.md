@@ -2,7 +2,8 @@
 
 Work like a director, not a template filler. Test 1: mute any 10 seconds — a viewer must guess the genre.
 Test 2: listen to any 30 seconds — someone who knows the channel must recognise its voice (Phase 1).
-Code-built graphics are a tool, not a default: when real footage of the thing being said exists, it wins.
+When real footage of the thing being said exists, it wins. For authored graphics and animation,
+use Remotion + SVG first; Python drawing only for a documented requirement Remotion cannot meet (docs/08).
 
 Write into script.md (after the profile), before any narration:
 - genre AND sub-genre, period/era, place, the nature of the available material (TV archive, newsreel,

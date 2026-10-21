@@ -83,9 +83,12 @@ cd projects/<slug>
 - Design the look for THIS film (docs/07) — there are no presets or templates: colour grade(s), palette,
   fonts, title/chapter/lower-third/credit styles, footage treatment, motion, transitions. Write it into
   script.md and project.yaml `design`; `$VF preflight` lists any decision still missing.
-- Build every graphic for this film in `custom_gfx.py` (docs/08: primitives, kit, overlays); complex motion
-  (3D, particles, long animated sequences) with an external tool rendered to a clip (`anim:`, docs/08).
-  Preview each with `$VF gfx-preview <name> k=v` and look at the PNG yourself (1 image).
+- Author graphics and animation with **Remotion + SVG first** (docs/08), render clips to `assets/anim/`,
+  and reference them with `anim:` / `overlay=anim:`. This includes simple maps, charts and cards.
+- Python drawing (`custom_gfx.py` / Pillow / Manim) is allowed only for a documented requirement Remotion
+  cannot meet. Record the gap and attempted approach in PROGRESS.md; missing dependencies are not a reason.
+- Preview representative frames of every clip, including text bounds, glyphs and the subtitle safe area.
+  For an approved Python fallback, also use `$VF gfx-preview <name> k=v`.
 
 ## Phase 8 — Edit + render
 ```bash
