@@ -8,7 +8,7 @@ were chosen for a 1986 TV-archive disaster story. Another title, era or genre ne
 
 | File | What it shows |
 |---|---|
-| `project.yaml` | registered footage with crop/desaturation, chapter music, readings, real-footage range with two declared chapter exceptions, and the design THIS film chose (grade, palette, fonts) |
+| `project.yaml` | registered footage with crop/desaturation, chapter music, readings, real-footage range for the film, and the design THIS film chose (grade, palette, fonts) |
 | `script.md` | style profile (Vietnamese notes) + director notes + design system + the full script with VIS lines |
 | `custom_gfx.py` | 30 project-specific graphics: mechanism diagrams (field joint, O-ring, booster), datasets (Dalal 1989 temperature/damage), reconstructed documents labelled 再現, maps, cards |
 | `research_facts.md` | research fact sheet with sources |
@@ -39,6 +39,6 @@ The reference passed two visual review rounds. `vf preflight` on it still report
 These are exactly the defects machines see better than eyes; new productions get them before rendering.
 
 ## Real-footage share
-Director range 50–80 % real. Preflight reports real 60 % / graphics 40 % for the film. CH2 (the field-joint
-mechanism) and CH3 (the night-before teleconference, never filmed: 21 % real) are declared in
-`director.chapter_exceptions` with their reasons; every other chapter is inside the range ± 15.
+Director range 50–80 % real for the whole film; preflight reports real 60 % / graphics 40 %. Chapters differ
+by purpose: CH3 (the night-before teleconference, never filmed) is 21 % real — maps, documents, charts —
+while the launch and aftermath chapters are mostly archive footage.

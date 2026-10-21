@@ -11,10 +11,6 @@ voice:
 director:
   genre: "disaster / true story (investigation, 1986 NASA, archival TV-era footage)"
   real_pct: {min: 50, max: 80}
-  chapter_tolerance: 15
-  chapter_exceptions:
-    CH2: "the field-joint mechanism has no footage - explained with diagrams"
-    CH3: "the night-before teleconference was never filmed - maps, documents, charts"
 # Design = THIS film's decisions (1986 archive, grave tone). Not a default for other films.
 design:
   grades:

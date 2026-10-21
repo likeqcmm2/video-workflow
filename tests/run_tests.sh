@@ -31,7 +31,7 @@ python3 make.py
 if $VF preflight > preflight.out 2>&1; then echo "FAIL: preflight passed on a broken project"; exit 1; fi
 for needle in "narration changed after TTS" "Commons file not downloaded" "sits on a cut/black" "no on-screen credit" \
               "footage too short" "outside safe area" "subtitle zone" "design.motion.still_zoom" \
-              "is not installed"; do
+              "is not installed" "director range 85-95"; do
   grep -q "$needle" preflight.out || { echo "FAIL: preflight missed: $needle"; exit 1; }
 done
 echo "ALL TESTS PASSED"

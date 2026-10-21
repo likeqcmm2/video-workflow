@@ -15,7 +15,7 @@
 | stills | unreadable, too small for full-frame (`fit=contain`), static too long, same still > 3 times | soft or repetitive pictures |
 | graphics | render errors, **text outside the 5 % safe area**, **text in the subtitle block**, overlapping text | an overflowing label was found only by eye |
 | subtitles | > 2 lines, over-long lines, a line starting with 、。」ー or small kana, events < 0.6 s | broken Japanese line breaks needed six rounds of fixes |
-| ratio | real-footage share outside `director.real_pct` for the film, and per chapter beyond ± `chapter_tolerance` unless the chapter is in `chapter_exceptions` (INFO prints the share and the reason) | genre drift; a chapter silently turning into slides |
+| ratio | real-footage share of the WHOLE film outside `director.real_pct` (each chapter's share is printed as INFO only — chapters may be all archive or all animation) | genre drift of the film as a whole |
 | timing | scenes split by weight (sync to check by eye) | picture ≠ word |
 | Wikimedia | pending downloads | missing pictures |
 

@@ -9,7 +9,7 @@ Phases run in order. Each ends with a **gate**: do not start the next phase unti
 | 1 | Style profile | profile at top of script.md, `length.sample_hook` | profile has hook analysis + must/never rules | docs/01 |
 | 2 | Director notes | genre/era/material, real % range, visual direction | notes written before any script text | docs/02 |
 | 3 | Research | research/facts.md, chapter outline | enough verified material for the minimum length | docs/03 |
-| 4 | Footage scouting | research/shotlist.md, assets/, `vf media scan` | every chapter has its own real visuals (or a written gap) | docs/04 |
+| 4 | Footage scouting | research/shotlist.md, assets/, `vf media scan` | every chapter has the visuals planned for it (or a written gap) | docs/04 |
 | 5 | Script + shot list | script.md (HOOK/BODY/CH/S, NAR/VIS) | `vf count --stamp` → GATE: PASS | docs/05 |
 | 6 | Voice | out/vo/*.wav | all scenes ≥ 0.93 similarity or reviewed+accepted | docs/06 |
 | 7 | Design system | design section in script.md, project.yaml design, custom_gfx.py / anim clips | every design decision filled, graphics previewed | docs/07, 08 |
@@ -43,9 +43,9 @@ cd projects/<slug>
 
 ## Phase 2 — Director notes (before writing narration)
 - From the title: genre AND sub-genre, era, place, the material that exists, the emotion. docs/02's table is
-  a starting point to reason from — decide for THIS film: real-footage range (`director.real_pct: {min, max}`,
-  chapter exceptions with reasons), pace, transitions, text behaviour, colour, sound, three don'ts, how a long
-  film stays varied per chapter.
+  a starting point to reason from — decide for THIS film: real-footage range for the whole film
+  (`director.real_pct: {min, max}`; single chapters may be all archive or all animation), pace, transitions,
+  text behaviour, colour, sound, three don'ts, how a long film stays varied across chapters.
 
 ## Phase 3 — Research (sub-agents)
 - Fan out 2–4 research sub-agents (by language / by period / by people) with the template in docs/03.
@@ -61,8 +61,9 @@ cd projects/<slug>
   (time ranges, content, people, burned-in text, quality). You keep only `research/shotlist.md`.
 - Register reusable videos in project.yaml `assets` (path, credit, link, license, rights_check, crop, desat).
 - Rights groups A/B/C and the `copyright_level` rules: docs/04. Sensitive-image rules: docs/04.
-- Gate: real material per chapter fits the director's range, or the gap is declared as a chapter exception
-  (with the reason) and written down for the report.
+- Gate: every chapter has the pictures the director planned for it (archive, graphics or animation — by
+  purpose), the whole film can reach the planned real-footage range, and real gaps are written down for the
+  report.
 
 ## Phase 5 — Script + shot list
 - Write script.md exactly in the format of docs/05 (HOOK / BODY / `### CHn | num | title` / `#### Sxxx` / NAR / VIS).
@@ -103,7 +104,7 @@ $VF render --changed     # background; parallel chapters; subtitles burned in; o
 - Round 2: `$VF final && $VF qa` (0 errors) + sheets at 3 s for every chapter changed since round 1 + a
   6 s skim of the whole film by a fresh sub-agent. Repeat until a round finds nothing to fix.
 - Style comes first: does it fit this genre, era and story; does anything look generic; is the real/graphics
-  share inside the range (preflight reports it per chapter)?
+  share of the whole film inside the range (chapters are free; preflight shows them for information)?
 
 ## Phase 11 — Deliver (docs/11)
 ```bash

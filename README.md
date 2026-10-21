@@ -76,8 +76,9 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
   đã gặp**, không có preset màu, không có template đồ hoạ, không có font/chuyển động mặc định: AI tự thiết kế
   màu, chữ, đồ hoạ, animation cho từng video theo thể loại, thời kỳ, chất liệu. Preflight báo lỗi nếu thiếu
   quyết định thiết kế nào.
-- **Tỷ lệ footage thật / đồ hoạ** là khoảng min–max do AI chọn theo thể loại (`director.real_pct`), kiểm tra cả
-  phim và từng chương; chương nào cần lệch (ví dụ cơ chế không ai quay được) thì ghi ngoại lệ kèm lý do.
+- **Tỷ lệ footage thật / đồ hoạ** là khoảng min–max cho **toàn bộ video**, do AI chọn theo thể loại
+  (`director.real_pct`). Từng chương tự do: có chương toàn tư liệu, có chương toàn đồ hoạ/animation, miễn
+  visual hợp lời đọc và được sắp xếp có chủ đích. Preflight chỉ in tỷ lệ từng chương để tham khảo.
 - **Animation ngoài** (Manim, Remotion, Blender, Three.js…) dùng được như clip `anim:`, kể cả lớp phủ có kênh
   alpha; chuyển cảnh fade/dissolve; nhiều bảng màu (grade) theo chương hoặc từng shot.
 

@@ -302,17 +302,14 @@ def _ratio_checks(r, tl):
         r.err("ratio", msg + " - find more real material or rethink graphics (docs/02, docs/04)")
     else:
         r.info("ratio", msg)
-    tol, exc = D.get("chapter_tolerance", 15), D.get("chapter_exceptions") or {}
+    # chapters are free (a chapter may be all archive or all animation) - their shares are shown, never judged
+    per = []
     for c in tl["chapters"]:
         cr, tot = ratio(tl, c["id"])
-        if tot < 1:
-            continue
-        if not lo - tol <= cr["real"] <= hi + tol:
-            if c["id"] in exc:
-                r.info("ratio", f"{c['id']} real {cr['real']:.0f}% - exception: {exc[c['id']]}")
-            else:
-                r.err("ratio", f"{c['id']} real {cr['real']:.0f}% outside {lo - tol}-{hi + tol}% - rebalance, or add "
-                               f"director.chapter_exceptions.{c['id']}: <reason>")
+        if tot >= 1:
+            per.append(f"{c['id']} {cr['real']:.0f}%")
+    if per:
+        r.info("ratio", "real share per chapter (for the director, not a rule): " + ", ".join(per))
 
 
 def preflight(skip_video_black=False):

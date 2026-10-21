@@ -33,9 +33,8 @@ DEFAULTS = {
     },
     "director": {
         "genre": "",
-        "real_pct": {"min": None, "max": None},   # REQUIRED range of real footage/photos in shot time (Phase 2)
-        "chapter_tolerance": 15,                   # a chapter may deviate this many points from the range ...
-        "chapter_exceptions": {},                  # ... unless listed here with a reason: {CH2: "mechanism has no footage"}
+        "real_pct": {"min": None, "max": None},   # REQUIRED range of real footage/photos over the WHOLE film (Phase 2);
+                                                   # single chapters are free (all archive / all animation is fine)
     },
     # design: NO style defaults. Every film decides its own look (docs/07). Only technical values have defaults.
     "design": {

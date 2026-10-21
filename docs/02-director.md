@@ -7,9 +7,11 @@ Code-built graphics are a tool, not a default: when real footage of the thing be
 Write into script.md (after the profile), before any narration:
 - genre AND sub-genre, period/era, place, the nature of the available material (TV archive, newsreel,
   paintings, satellite imagery, smartphone video…), and the main emotion (fear, curiosity, awe, grief…)
-- the planned share of real footage/photos as a RANGE → `project.yaml director.real_pct: {min, max}`;
-  chapters that must deviate (e.g. a mechanism no camera ever filmed) → `director.chapter_exceptions` with
-  the reason. Preflight errors outside the range (film and per chapter ± `chapter_tolerance`).
+- the planned share of real footage/photos over the WHOLE film as a RANGE → `project.yaml
+  director.real_pct: {min, max}`. Preflight errors only when the film as a whole is outside it.
+  Chapters are free: one chapter may be all archive, another all graphics or animation (a mechanism nobody
+  filmed, a reconstruction, a data-heavy passage). What matters is that every picture fits its narration and
+  the arrangement has a purpose — you are the director. Preflight prints each chapter's share as information.
 - pace (cut rhythm, how long stills hold), transitions, how on-screen text behaves, colour and texture,
   sound — all specific to THIS film (they become the design system in Phase 7)
 - three things NOT to do in this film
@@ -35,5 +37,6 @@ Mixed titles: pick the main genre and borrow from the second. Unlisted genre: re
 viewers of this genre expect, what makes them trust and stay. Animation clips made with external tools
 (`anim:`) and code graphics both count as graphics; footage and photos count as real.
 
-Reference: Challenger (1986 disaster, TV-era archive) used real 50–80 % with two graphics-heavy chapters
-declared as exceptions (the joint mechanism and the unfilmed teleconference) — see examples/challenger.
+Reference: Challenger (1986 disaster, TV-era archive) planned 50–80 % real and landed at 60 %; its chapter
+on the unfilmed teleconference is mostly maps, documents and charts (21 % real) because that is what the
+story needed there — see examples/challenger.

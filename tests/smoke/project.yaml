@@ -6,8 +6,6 @@ voice:
 director:
   genre: test
   real_pct: {min: 20, max: 70}
-  chapter_tolerance: 15
-  chapter_exceptions: {CH1: "test chapter built from graphics"}
 design:                      # every value is a decision of this (test) film - nothing is a default style
   grades:
     main: {desat: 0.2, contrast: 1.05, warm: [1.02, 1.0, 0.97], vignette: 0.25, grain: 5, gfx_grain: 2, bottom: 0.6}

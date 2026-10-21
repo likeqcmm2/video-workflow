@@ -20,9 +20,8 @@ voice:
 
 director:                     # Phase 2 (docs/02) - decided for THIS title, no defaults
   genre: ""                   # genre + sub-genre + era, e.g. "history / 1940s naval war / newsreel archive"
-  real_pct: {min: null, max: null}   # REQUIRED: range of real footage/photos in shot time (preflight checks film + each chapter)
-  chapter_tolerance: 15       # a chapter may sit this many points outside the range ...
-  chapter_exceptions: {}      # ... unless declared with a reason: {CH3: "the mechanism was never filmed"}
+  real_pct: {min: null, max: null}   # REQUIRED: share of real footage/photos over the WHOLE film (shot time).
+                              # Chapters are free: one may be all archive, another all animation - arrange with purpose.
 
 design:                       # Phase 7 (docs/07) - EVERYTHING here is this film's own decision; preflight lists what is missing
   grades:
