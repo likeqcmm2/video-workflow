@@ -8,10 +8,28 @@ voice:
   tts_model: gemini-3.8-flash-tts
   voice: Arlo
   readings: {"Oリング": "オーリング", "NASA": "ナサ"}
-director: {genre: "disaster / true story (investigation)", target_real_pct: 60}
+director:
+  genre: "disaster / true story (investigation, 1986 NASA, archival TV-era footage)"
+  real_pct: {min: 50, max: 80}
+  chapter_tolerance: 15
+  chapter_exceptions:
+    CH2: "the field-joint mechanism has no footage - explained with diagrams"
+    CH3: "the night-before teleconference was never filmed - maps, documents, charts"
+# Design = THIS film's decisions (1986 archive, grave tone). Not a default for other films.
 design:
-  look: documentary_dark
-  chapter_card: {enabled: true, duration: 3.6}
+  grades:
+    main: {desat: 0.28, contrast: 1.06, warm: [1.025, 1.0, 0.965], vignette: 0.28, grain: 7, gfx_grain: 3.5, bottom: 0.5}
+  palette: {bg: "#0d1014", text: "#e8e2d6", muted: "#8f8a80", dim: "#46484c", accent: "#c8553d",
+            secondary: "#9fb7c9", paper: "#e9e4d8", ink: "#22201c", line: "#beb8ac", card_bg: "#080a0d"}
+  fonts: {serif: NotoSerifJP-500.ttf, serif_bold: NotoSerifJP-700.ttf, sans: NotoSansJP-400.ttf,
+          sans_medium: NotoSansJP-500.ttf, sans_bold: NotoSansJP-700.ttf}
+  subtitle: {font: "Noto Sans JP Medium"}
+  credit: {font: "Noto Sans JP"}
+  stamp: {font: "Noto Sans JP Medium"}
+  lower_third: {name_font: "Noto Serif JP Medium", role_font: "Noto Sans JP"}
+  chapter_card: {enabled: true, duration: 3.6, gfx: chapter}
+  transitions: {film_in: "fade:0.6", film_out: "fade:1.5", after_card: "fade:0.5"}
+  motion: {still_zoom: 0.10, video_push: 0.025}
 assets:
   TAPE:
     path: assets/ia/commission_vtv26.mp4

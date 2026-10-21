@@ -1,13 +1,14 @@
 """Timeline: script.md + voice durations -> out/timeline.json + per-chapter ASS files.
 
-Scene time = lead + voice + gap (+ quote_extra for quote cards, + chapter_end_extra for the last scene
-of a chapter, + scene option pause=<s>). Times are snapped to frames.
+Scene time = lead + voice + gap (+ chapter_end_extra for the last scene of a chapter, + scene option
+pause=<s>). Times are snapped to frames.
 Shots inside a scene:
   * as many VIS lines as sentences -> each cut lands in the silence between two sentences
     (so a picture appears exactly when the narration names it)
   * otherwise -> split by weights  w=<number>  (default 1)
 Subtitles: one event per sentence (or per <=2-line chunk of a long sentence), timed to the silences
-inside the scene's wav. Hidden on scenes whose only visual is a quote card that shows the same words.
+inside the scene's wav. Scene option subs=off hides them (e.g. when the picture already shows the words).
+Grades: shot option grade=<name> > chapter option grade=<name> > "main".
 """
 import json
 import os
@@ -65,17 +66,14 @@ def align(chunks, dur, sil):
     return [(times[i], times[i + 1]) for i in range(len(chunks))]
 
 
-def _is_quote_only(s):
-    vis = [parse_vis(v) for v in s["vis"]]
-    if s["opts"].get("subs") == "off":
-        return True
-    if s["opts"].get("subs") == "on":
-        return False
-    return all(v["src"] == "gfx:quote" and v["opts"].get("kind") != "name" for v in vis) and \
-        s["nar"].lstrip()[:1] in "「『“\""
+def _subs_off(s):
+    return s["opts"].get("subs") == "off"
 
 
 def plan(strict=True):
+    miss = config.design_missing()
+    if miss and strict:
+        raise SystemExit("design incomplete - decide these first (docs/02, docs/07):\n  " + "\n  ".join(miss))
     cfg = config.load()
     W, H, FPS = config.size()
     T = cfg["timing"]
@@ -91,7 +89,8 @@ def plan(strict=True):
         start = t
         if cid != "HOOK" and card_cfg["enabled"] and ch["opts"].get("card") != "none":
             dur = float(ch["opts"].get("card_dur", card_cfg["duration"]))
-            timeline.append({"type": "card", "ch": cid, "t0": t, "t1": t + dur, "num": ch["num"], "title": ch["title"]})
+            timeline.append({"type": "card", "ch": cid, "t0": t, "t1": t + dur, "num": ch["num"], "title": ch["title"],
+                             "opts": dict(ch["opts"]), "grade": ch["opts"].get("grade") or "main"})
             t += dur
         ch_scenes = [s for s in scenes if s["chapter"] == cid]
         for si, s in enumerate(ch_scenes):
@@ -103,8 +102,6 @@ def plan(strict=True):
             else:
                 raise SystemExit(f"voice missing for {s['id']} - run: vf tts")
             gap = T["gap"]
-            if any(v.startswith("gfx:quote") for v in s["vis"]):
-                gap += T["quote_extra"]
             if si == len(ch_scenes) - 1:
                 gap += T["chapter_end_extra"]
             gap += float(s["opts"].get("pause", 0))
@@ -114,7 +111,17 @@ def plan(strict=True):
             sents = sentences(s["nar"])
             sil = silences(wav) if wav.exists() else []
             st = align(sents, d, sil) if len(sents) > 1 else [(0.0, d)]
-            shots = [parse_vis(v) for v in s["vis"]]
+            shots = []
+            for v in s["vis"]:
+                try:
+                    shots.append(parse_vis(v))
+                except ValueError as e:
+                    if strict:
+                        raise SystemExit(f"{s['id']}: {e}")
+                    errors.append(f"{s['id']}: {e}")
+            if not shots:
+                errors.append(f"{s['id']}: no usable VIS line")
+                shots = [{"src": "", "in": None, "opts": {}, "raw": ""}]
             if len(shots) == len(sents) and len(shots) > 1:
                 cuts = [t0] + [t0 + lead + (st[i][1] + st[i + 1][0]) / 2 for i in range(len(st) - 1)] + [t1]
                 split = "sentence"
@@ -131,17 +138,18 @@ def plan(strict=True):
                     r = resolve(sh)
                 except AssetError as e:
                     errors.append(f"{s['id']}: {e}")
-                    r = {"kind": "missing", "path": None, "credit": None, "used_alt": False}
+                    r = {"kind": "missing", "path": None, "credit": None, "used_alt": False, "cls": "real"}
                 in_pt = sh["in"]
                 opts = sh["opts"]
                 if r.get("used_alt"):
                     in_pt, opts = r["alt_shot"]["in"], {**r["alt_shot"]["opts"]}
                 timeline.append({"type": "shot", "scene": s["id"], "ch": cid, "t0": cuts[i], "t1": cuts[i + 1],
-                                 "kind": r["kind"], "path": r["path"], "in": in_pt, "opts": opts,
-                                 "credit": r.get("credit"), "src": sh["src"], "used_alt": r.get("used_alt", False),
-                                 "split": split, "line": s["line"]})
+                                 "kind": r["kind"], "cls": r.get("cls", "real"), "path": r["path"], "in": in_pt,
+                                 "opts": opts, "credit": r.get("credit"), "src": sh["src"],
+                                 "used_alt": r.get("used_alt", False), "split": split, "line": s["line"],
+                                 "grade": opts.get("grade") or ch["opts"].get("grade") or "main"})
             subs = []
-            if not _is_quote_only(s):
+            if not _subs_off(s):
                 for (a, b), sent in zip(st, sents):
                     chunks = events(sent)
                     tot = sum(len(c) for c in chunks)

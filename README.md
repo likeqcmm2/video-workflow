@@ -72,7 +72,14 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
 - **Review ảnh do sub-agent làm**, ngữ cảnh chính không bị phình (lần trước 119 ảnh nằm trong ngữ cảnh).
 - **Wikimedia**: thumbnail chuẩn + bản video chuyển mã ngay từ đầu (file gốc bị 429).
 - **Bí mật** chỉ qua biến môi trường.
-- **Tổng quát**: đa thể loại (bảng thể loại → preset màu/nhịp), đa ngôn ngữ (ja, zh, ko, en, vi…).
+- **Tổng quát**: đa thể loại, đa ngôn ngữ (ja, zh, ko, en, vi…). Repo **chỉ ghi kỹ thuật và các lỗi kỹ thuật
+  đã gặp**, không có preset màu, không có template đồ hoạ, không có font/chuyển động mặc định: AI tự thiết kế
+  màu, chữ, đồ hoạ, animation cho từng video theo thể loại, thời kỳ, chất liệu. Preflight báo lỗi nếu thiếu
+  quyết định thiết kế nào.
+- **Tỷ lệ footage thật / đồ hoạ** là khoảng min–max do AI chọn theo thể loại (`director.real_pct`), kiểm tra cả
+  phim và từng chương; chương nào cần lệch (ví dụ cơ chế không ai quay được) thì ghi ngoại lệ kèm lý do.
+- **Animation ngoài** (Manim, Remotion, Blender, Three.js…) dùng được như clip `anim:`, kể cả lớp phủ có kênh
+  alpha; chuyển cảnh fade/dissolve; nhiều bảng màu (grade) theo chương hoặc từng shot.
 
 Chi tiết: `docs/lessons-learned.md`.
 

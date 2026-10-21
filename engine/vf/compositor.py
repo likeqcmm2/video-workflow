@@ -1,4 +1,4 @@
-"""Frame sources: stills (Ken Burns / contained on blurred background) and archival video readers."""
+"""Frame sources: stills (Ken Burns / contained on blurred background), video readers, overlays."""
 import subprocess
 
 import cv2
@@ -37,6 +37,7 @@ def blur_bg(small):
 
 
 def kb_params(kb, u, amp):
+    """Still-image motion: in/out zoom, l/r/u/d pan, none."""
     if kb == "in":
         return 1.0 + amp * u, 0, 0
     if kb == "out":
@@ -54,7 +55,7 @@ def image_frame(img, opts, u):
     """fit=cover (fills frame, Ken Burns) | contain (whole picture on a blurred copy of itself).
     Default: cover for landscape 1.2-2.2 aspect, contain otherwise (portraits, documents)."""
     W, H, _ = config.size()
-    amp = config.load()["design"]["kenburns"]
+    amp = float(opts.get("zoom", config.load()["design"]["motion"]["still_zoom"] or 0))
     h, w = img.shape[:2]
     asp = w / h
     fit = opts.get("fit") or ("cover" if 1.2 <= asp <= 2.2 else "contain")
@@ -132,17 +133,18 @@ class VideoReader:
             pass
 
 
-def video_frame(fr, rd, u):
+def video_frame(fr, rd, u, push=None):
     W, H, _ = config.size()
+    push = config.load()["design"]["motion"]["video_push"] if push is None else push
     if fr is None:
         return np.zeros((H, W, 3), np.uint8)
     th, tw = fr.shape[:2]
     if tw == W and th == H:
-        s = 1.0 + 0.025 * u
+        s = 1.0 + push * u
         M = np.float32([[s, 0, W / 2 - s * W / 2], [0, s, H / 2 - s * H / 2]])
         return cv2.warpAffine(fr, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
     out = blur_bg(fr)
-    s = 1.0 + 0.02 * u
+    s = 1.0 + push * 0.8 * u
     lift = 20 if rd.small else 0
     M = np.float32([[s, 0, W / 2 - s * tw / 2], [0, s, H / 2 - s * th / 2 - lift]])
     cv2.warpAffine(np.ascontiguousarray(fr), M, (W, H), dst=out, flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_TRANSPARENT)
@@ -150,3 +152,44 @@ def video_frame(fr, rd, u):
         x0, y0 = int(W / 2 - s * tw / 2) - 3, int(H / 2 - s * th / 2 - lift) - 3
         cv2.rectangle(out, (x0, y0), (x0 + int(s * tw) + 5, y0 + int(s * th) + 5), (120, 120, 116), 2)
     return out
+
+
+class OverlayReader:
+    """RGBA frames of an animation clip with alpha (ProRes 4444 .mov, VP9 .webm with alpha, PNG sequence pattern)
+    composited over the shot. Clips without alpha cover the frame completely."""
+
+    def __init__(self, path, dur, t_in=0.0):
+        W, H, FPS = config.size()
+        self.W, self.H = W, H
+        dec = ["-c:v", "libvpx-vp9"] if path.lower().endswith(".webm") else []   # libvpx keeps webm alpha
+        self.proc = subprocess.Popen(["ffmpeg", "-v", "error", *dec, "-ss", f"{t_in:.3f}", "-i", path, "-t", f"{dur + 0.2:.3f}",
+                                      "-an", "-vf", f"fps={FPS},scale={W}:{H}:flags=lanczos,format=rgba",
+                                      "-f", "rawvideo", "-pix_fmt", "rgba", "-"],
+                                     stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        self.last = None
+
+    def read(self):
+        b = self.proc.stdout.read(self.W * self.H * 4)
+        if len(b) == self.W * self.H * 4:
+            self.last = np.frombuffer(b, np.uint8).reshape(self.H, self.W, 4)
+        return self.last
+
+    def close(self):
+        try:
+            self.proc.stdout.close()
+            self.proc.kill()
+            self.proc.wait(timeout=5)
+        except Exception:
+            pass
+
+
+def composite(frame, rgba):
+    """Alpha-composite an RGBA layer (numpy or PIL) over an RGB frame."""
+    if rgba is None:
+        return frame
+    a = np.asarray(rgba)
+    if a.shape[2] == 3:
+        return np.ascontiguousarray(a)
+    alpha = a[..., 3:4].astype(np.float32) / 255.0
+    out = frame.astype(np.float32) * (1 - alpha) + a[..., :3].astype(np.float32) * alpha
+    return out.astype(np.uint8)

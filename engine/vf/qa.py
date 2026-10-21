@@ -53,14 +53,73 @@ class Report:
         return c.get("ERROR", 0) == 0
 
 
-def _fonts_ok(r):
+def font_families():
+    """{family or full name (lower) -> font file} for every font in vendor/fonts (what libass can see)."""
+    out = {}
+    for f in sorted(config.FONTS_DIR.glob("*.[ot]tf")):
+        res = subprocess.run(["fc-scan", "--format", "%{family}|%{fullname}\n", str(f)], capture_output=True, text=True).stdout
+        for line in res.splitlines():
+            for name in line.replace("|", ",").split(","):
+                if name.strip():
+                    out.setdefault(name.strip().lower(), str(f))
+    return out
+
+
+_cmaps = {}
+
+
+def missing_glyphs(font_file, text):
+    try:
+        from fontTools.ttLib import TTFont
+    except ImportError:
+        return set()
+    if font_file not in _cmaps:
+        _cmaps[font_file] = set(TTFont(font_file, fontNumber=0, lazy=True).getBestCmap() or {})
+    return {ch for ch in text if not ch.isspace() and ord(ch) not in _cmaps[font_file] and ch not in "\u3000"}
+
+
+def _design(r):
+    for m in config.design_missing():
+        r.err("design", f"decide and set {m} - the engine assumes no style (docs/02, docs/07)")
+
+
+def _fonts_ok(r, tl=None):
     cfg = config.load()
-    for k, f in cfg["design"]["fonts"].items():
-        if not (config.FONTS_DIR / f).exists():
-            r.err("env", f"font {f} ({k}) missing in vendor/fonts - run scripts/setup.sh {cfg['language']}")
+    d = cfg["design"]
+    for k, f in d["fonts"].items():
+        if not (config.FONTS_DIR / f).exists() and not os.path.exists(f):
+            r.err("fonts", f"font file {f} (role {k}) missing - scripts/fetch_fonts.py \"Family:weights\"")
     out = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True).stdout
     if " ass " not in out:
         r.err("env", "ffmpeg lacks the libass 'ass' filter")
+    fam = font_families()
+    ass_fonts = {"subtitle": d["subtitle"]["font"], "credit": d["credit"]["font"], "stamp": d["stamp"]["font"],
+                 "lower_third name": d["lower_third"]["name_font"], "lower_third role": d["lower_third"]["role_font"]}
+    files = {}
+    for role, name in ass_fonts.items():
+        if not name:
+            continue
+        f = fam.get(name.lower())
+        if not f:
+            r.err("fonts", f"{role} font {name!r} is not installed in vendor/fonts - libass would silently use another "
+                           f"font (installed: {sorted(set(fam))[:8]}...)")
+        files[role] = f
+    if tl:   # every character on screen must exist in its font (otherwise: tofu boxes)
+        texts = {"subtitle": "", "credit": "", "stamp": "", "lower_third name": "", "lower_third role": ""}
+        for e in tl["timeline"]:
+            if e["type"] == "vo":
+                texts["subtitle"] += "".join(x[2].replace("\\N", "") for x in e["subs"])
+            elif e["type"] == "shot":
+                texts["credit"] += e.get("credit") or ""
+                texts["stamp"] += e["opts"].get("stamp", "")
+                nm, _, role = e["opts"].get("lt", "").replace(" / ", "／").partition("／")
+                texts["lower_third name"] += nm
+                texts["lower_third role"] += role
+        for role, txt in texts.items():
+            if files.get(role) and txt:
+                miss = missing_glyphs(files[role], txt)
+                if miss:
+                    r.err("fonts", f"{role} font lacks glyphs {''.join(sorted(miss))[:30]!r} (would render as boxes)")
 
 
 def _voice(r, scenes):
@@ -98,7 +157,7 @@ def _shots(r, tl):
         dur = e["t1"] - e["t0"]
         if e.get("used_alt"):
             r.warn(w, f"primary visual missing, using alt -> {e['src']} replaced; fix or accept consciously")
-        if e["kind"] in ("image", "video") and not e.get("credit"):
+        if e["kind"] in ("image", "video") and e.get("cls", "real") == "real" and not e.get("credit"):
             r.err(w, f"no on-screen credit for {e['src']} (add credit=... or register the asset with a credit)")
         if e["kind"] == "image":
             try:
@@ -119,7 +178,7 @@ def _shots(r, tl):
                 r.err(w, f"in-point {t_in:.1f}s beyond end of {e['path']} ({info['dur']:.1f}s)")
                 continue
             av = available(e["path"], t_in, e["opts"].get("cross_cuts") == "1")
-            if scan_data(e["path"]) is None:
+            if scan_data(e["path"]) is None and e.get("cls", "real") == "real":
                 r.warn(w, f"{os.path.basename(e['path'])} not scanned for cuts/black (vf media scan)")
             speed = 1.0 if dur <= av else max(float(e["opts"].get("min_speed", 0.5)), av / max(dur, 1e-3))
             if av <= 0.3:
@@ -163,7 +222,7 @@ def _gfx(r, tl):
     seen = set()
     items = [e for e in tl["timeline"] if (e["type"] == "shot" and e["kind"] == "gfx") or e["type"] == "card"]
     for e in items:
-        name = "chapter" if e["type"] == "card" else e["path"]
+        name = (cfg["design"]["chapter_card"].get("gfx") or "chapter") if e["type"] == "card" else e["path"]
         opts = {"num": e["num"], "title": e["title"]} if e["type"] == "card" else e["opts"]
         key = (name, json.dumps(opts, sort_keys=True, ensure_ascii=False))
         if key in seen:
@@ -178,8 +237,12 @@ def _gfx(r, tl):
                 r.err(where, f"gfx:{name} failed: {type(ex).__name__}: {ex}")
                 break
             low_ok = opts.get("allow_low") == "1"
-            for (x0, y0, x1, y1, s) in boxes:
+            for (x0, y0, x1, y1, s, fp) in boxes:
                 lab = s.replace("\n", " ")[:24]
+                if fp:
+                    miss = missing_glyphs(fp, s)
+                    if miss:
+                        r.err(where, f"gfx:{name} font {os.path.basename(fp)} lacks glyphs {''.join(sorted(miss))[:20]!r}")
                 if x0 < W * m - 2 or x1 > W * (1 - m) + 2 or y0 < H * m - 2:
                     r.err(where, f"gfx:{name} text outside safe area: {lab!r} box=({x0:.0f},{y0:.0f},{x1:.0f},{y1:.0f})")
                 elif y1 > ztop and not low_ok:
@@ -213,22 +276,50 @@ def _subs(r, tl):
                 r.warn(e["scene"], f"subtitle on screen only {b - a:.2f}s: {txt[:20]}")
 
 
-def ratio(tl):
-    acc = Counter()
+def ratio(tl, chapter=None):
+    """Share of SHOT time (cards and end black excluded): real footage/photos vs graphics (code graphics +
+    animation clips), plus the split by kind."""
+    acc, kinds = Counter(), Counter()
     for e in tl["timeline"]:
-        if e["type"] == "shot":
-            acc[e["kind"]] += e["t1"] - e["t0"]
-        elif e["type"] in ("card", "end"):
-            acc[e["type"]] += e["t1"] - e["t0"]
+        if e["type"] == "shot" and (chapter is None or e["ch"] == chapter):
+            d = e["t1"] - e["t0"]
+            acc[e.get("cls", "real")] += d
+            kinds["anim" if e.get("cls") == "graphic" and e["kind"] == "video" else e["kind"]] += d
     tot = sum(acc.values()) or 1
-    return {k: round(100 * v / tot, 1) for k, v in acc.items()}, tot
+    out = {"real": round(100 * acc["real"] / tot, 1), "graphic": round(100 * acc["graphic"] / tot, 1)}
+    out.update({f"kind_{k}": round(100 * v / tot, 1) for k, v in kinds.items()})
+    return out, tot
+
+
+def _ratio_checks(r, tl):
+    D = config.load()["director"]
+    lo, hi = D["real_pct"].get("min"), D["real_pct"].get("max")
+    rt, _ = ratio(tl)
+    if lo is None or hi is None:
+        return
+    msg = f"real {rt['real']:.0f}% / graphics {rt['graphic']:.0f}% (director range {lo}-{hi}%)"
+    if not lo <= rt["real"] <= hi:
+        r.err("ratio", msg + " - find more real material or rethink graphics (docs/02, docs/04)")
+    else:
+        r.info("ratio", msg)
+    tol, exc = D.get("chapter_tolerance", 15), D.get("chapter_exceptions") or {}
+    for c in tl["chapters"]:
+        cr, tot = ratio(tl, c["id"])
+        if tot < 1:
+            continue
+        if not lo - tol <= cr["real"] <= hi + tol:
+            if c["id"] in exc:
+                r.info("ratio", f"{c['id']} real {cr['real']:.0f}% - exception: {exc[c['id']]}")
+            else:
+                r.err("ratio", f"{c['id']} real {cr['real']:.0f}% outside {lo - tol}-{hi + tol}% - rebalance, or add "
+                               f"director.chapter_exceptions.{c['id']}: <reason>")
 
 
 def preflight(skip_video_black=False):
     from .plan import plan
     from .scriptfmt import counts, parse
     r = Report("preflight")
-    _fonts_ok(r)
+    _design(r)
     cfg = config.load()
     c = counts()
     L = cfg["length"]
@@ -244,19 +335,20 @@ def preflight(skip_video_black=False):
         r.warn("script", "no 'Length check: ... PASS' line - run: vf count --stamp")
     scenes, _ = parse()
     _voice(r, scenes)
-    tl = plan(strict=False)
+    try:
+        tl = plan(strict=False)
+    except (KeyError, SystemExit) as e:
+        if not config.design_missing():
+            raise
+        r.info("design", f"timeline, graphics, subtitle and ratio checks need the design first ({e})")
+        return r.finish()
     for e in tl["errors"]:
         r.err("asset", e)
+    _fonts_ok(r, tl)
     _shots(r, tl)
     _gfx(r, tl)
     _subs(r, tl)
-    rt, _ = ratio(tl)
-    real = rt.get("image", 0) + rt.get("video", 0)
-    target = cfg["director"].get("target_real_pct")
-    if target and abs(real - target) > 12:
-        r.warn("ratio", f"real footage/photos {real:.0f}% vs director target {target}% (gfx {rt.get('gfx', 0):.0f}%)")
-    else:
-        r.info("ratio", f"real {real:.0f}% / gfx {rt.get('gfx', 0):.0f}%")
+    _ratio_checks(r, tl)
     weight_split = sorted({e["scene"] for e in tl["timeline"] if e["type"] == "shot" and e.get("split") == "weight"})
     if weight_split:
         r.info("timing", f"{len(weight_split)} scenes split by weight (check sync by eye): {weight_split[:15]}")
@@ -311,15 +403,19 @@ def postqa(path="out/video.mp4"):
     err = subprocess.run(["ffmpeg", "-v", "info", "-i", path, "-an", "-vf", "scale=480:-2,blackdetect=d=0.25:pic_th=0.92:pix_th=0.05",
                           "-f", "null", "-"], capture_output=True, text=True).stderr
     blacks = [(float(x), float(y)) for x, y in re.findall(r"black_start:([\d.]+) black_end:([\d.]+)", err)]
-    shots = [e for e in tl["timeline"] if e["type"] == "shot" and e["kind"] in ("image", "video")]
-    fade_in = cfg["design"]["fade_in_start"]
-    end_t0 = tl["chapters"][-1]["end"] - cfg["design"]["fade_out_end"]
+    shots = [e for e in tl["timeline"] if e["type"] == "shot" and e["kind"] in ("image", "video") and e.get("cls", "real") == "real"]
+    from .render import _trans
+    fade_in = _trans(cfg["design"]["transitions"].get("film_in"))[1]
+    end_t0 = tl["chapters"][-1]["end"] - _trans(cfg["design"]["transitions"].get("film_out"))[1]
     for b0, b1 in blacks:
         if b1 <= fade_in + 0.1 or b0 >= end_t0 - 0.1:
             continue
-        hit = [e for e in shots if e["t0"] + 0.5 < b1 and b0 < e["t1"]]
+        def window(e):
+            a0 = e["t0"] + max(0.5, _trans(e["opts"].get("in"))[1])
+            a1 = e["t1"] - _trans(e["opts"].get("out"))[1]
+            return a0, a1
+        hit = [e for e in shots if window(e)[0] < b1 and b0 < window(e)[1]]
         if hit:
             r.err("black", f"{b0:.1f}-{b1:.1f}s black during {hit[0]['scene']} ({hit[0]['src']})")
-    rt, _ = ratio(tl)
-    r.info("ratio", json.dumps(rt))
+    _ratio_checks(r, tl)
     return r.finish()

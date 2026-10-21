@@ -13,8 +13,8 @@ Format (full spec: docs/05-script-format.md):
     VIS: ...
     VIS: ...                                  (several VIS lines = several shots in the scene)
 
-Sources:  gfx:<template>   cm:<Commons file title>   nasa:<NASA id>   img:<path>
-          vid:<path> @m:ss.s   <ASSET_ID> @m:ss.s   (ASSET_ID registered in project.yaml assets)
+Sources:  gfx:<name> (custom_gfx.py)   anim:<clip> [@m:ss.s]   cm:<Commons file title>   nasa:<NASA id>
+          img:<path>   vid:<path> @m:ss.s   <ASSET_ID> @m:ss.s   (ASSET_ID registered in project.yaml assets)
 """
 import datetime
 import re

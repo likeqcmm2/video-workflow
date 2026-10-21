@@ -8,8 +8,9 @@ every rule here exists because that production paid for it in time or tokens (`d
 ## How a job arrives
 The user sends: this repo's URL, a **title**, a **sample script** (file or pasted text) and optionally
 parameters (language, minimum length, copyright level, graphic-content level, voice). Anything not given
-uses the defaults in `templates/project.template.yaml`. Work end-to-end without asking, unless you are
-completely blocked (e.g. a required secret is missing).
+uses the technical defaults in `templates/project.template.yaml` (language, length, rights levels, voice —
+never visual style). Work end-to-end without asking, unless you are completely blocked (e.g. a required
+secret is missing).
 
 ## Read this first, then only what the current phase needs
 1. `WORKFLOW.md` — the phases, their outputs and their **gates**. Follow it in order.
@@ -18,8 +19,13 @@ completely blocked (e.g. a required secret is missing).
 
 ## Non-negotiables
 - **Quality first.** Speed-ups are only acceptable when they cost (almost) nothing in quality.
-- The sample script decides the **words** (voice, rhythm, hook form, endings). The title's genre decides the
-  **pictures** (real-footage ratio, pace, colour, transitions). Never one template for every topic.
+- The sample script decides the **words** (voice, rhythm, hook form, endings). The title — its genre, sub-genre,
+  era, place and the material that exists — decides the **pictures** (real-footage range, pace, colour grade,
+  typography, graphics, animation, transitions).
+- **This repo prescribes technique, not style.** It records how to do things reliably and the technical traps
+  that cost time or tokens. It has no colour presets, no graphics templates, no default fonts and no default
+  motion: you design every film's look from scratch (docs/02, docs/07). The Challenger example shows the
+  quality bar, not a look to copy. Preflight errors until every design decision is written down.
 - Every fact comes from research with a source; every asset has an on-screen credit and a row in sources.md.
 - Hook length = sample hook ±15 % and is locked once the length gate passes; only the body grows.
 - No gore, bodies, injured victims, child victims. Reconstructions are labelled as reconstructions.

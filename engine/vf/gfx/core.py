@@ -1,9 +1,10 @@
-"""Drawing primitives shared by every graphic (library templates and project custom_gfx.py).
+"""Neutral drawing primitives for a project's own graphics (custom_gfx.py). No styles live here.
 
-All graphics draw on a 1920x1080 RGB canvas (scaled if the project uses another size).
-Colours and fonts come from project.yaml `design`. Every text() call records its bounding box in
-BOXES so QA can verify that no text leaves the safe area, enters the subtitle zone or overlaps
-other text (lesson: an overflowing label was only found by eye after rendering).
+All graphics draw on a 1920x1080 canvas (scaled if the project uses another size). Colours (C.<key>) and
+fonts (F(<role>, size)) are whatever the film's project.yaml `design.palette` / `design.fonts` define.
+Every text() call records its bounding box in BOXES so QA can verify that no text leaves the safe area,
+enters the subtitle block or overlaps other text (lesson: an overflowing label was only found by eye).
+A graphic may return RGBA: transparent pixels show the shot underneath when used as an overlay.
 """
 import math
 import os
@@ -15,7 +16,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 from .. import config
 
 W, H = 1920, 1080
-BOXES = []          # filled during one render() call: (x0, y0, x1, y1, text)
+BOXES = []          # filled during one render() call: (x0, y0, x1, y1, text, font_path)
 
 
 def _rgb(h):
@@ -24,25 +25,29 @@ def _rgb(h):
 
 
 class _Palette:
+    """C.<KEY> -> RGB tuple of design.palette[key] (any keys the film defines)."""
+
     def __getattr__(self, k):
         pal = config.load()["design"]["palette"]
         if k.lower() in pal:
             return _rgb(pal[k.lower()])
-        raise AttributeError(k)
+        raise AttributeError(f"design.palette has no {k.lower()!r} (keys: {sorted(pal)})")
 
 
-C = _Palette()          # C.BG, C.TEXT, C.MUTED, C.ACCENT, C.SECONDARY, C.PAPER, C.INK, C.LINE, C.DIM, C.CARD_BG
+C = _Palette()
 
 
 @lru_cache(None)
-def F(kind, size):
+def F(role, size):
+    """Font for a role defined in design.fonts (role -> file in vendor/fonts, or an absolute path)."""
     fonts = config.load()["design"]["fonts"]
-    alias = {"serifb": "serif_bold", "sansm": "sans_medium", "sansb": "sans_bold"}
-    name = fonts.get(alias.get(kind, kind)) or fonts["sans"]
-    for p in (config.FONTS_DIR / name, name, "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf"):
+    if role not in fonts:
+        raise KeyError(f"design.fonts has no role {role!r} (roles: {sorted(fonts)})")
+    name = fonts[role]
+    for p in (config.FONTS_DIR / name, name):
         if os.path.exists(p):
             return ImageFont.truetype(str(p), size)
-    raise FileNotFoundError(f"font {name} not found in {config.FONTS_DIR} (run scripts/setup.sh <lang>)")
+    raise FileNotFoundError(f"font {name} not found in {config.FONTS_DIR} (scripts/fetch_fonts.py \"Family:wghts\")")
 
 
 def ease(x):
@@ -64,13 +69,14 @@ def canvas(bg=None):
 
 
 def text(d, xy, s, font, fill, anchor="la", a=1.0, bg=None, spacing=10, align=None):
+    """Draw text (fill blended towards bg by alpha a) and record its box for QA. Use it for ALL text."""
     if a <= 0.01 or not s:
         return None
     align = align or ("center" if anchor[0] == "m" else ("right" if anchor[0] == "r" else "left"))
     d.multiline_text(xy, s, font=font, fill=mix(fill, a, bg), anchor=anchor, spacing=spacing, align=align)
     bb = d.multiline_textbbox(xy, s, font=font, anchor=anchor, spacing=spacing, align=align)
     if a > 0.05:
-        BOXES.append((*bb, s))
+        BOXES.append((*bb, s, getattr(font, "path", None)))
     return bb
 
 
@@ -92,17 +98,6 @@ def partial_line(d, p0, p1, frac, fill, width=3):
     d.line([p0, (p0[0] + (p1[0] - p0[0]) * frac, p0[1] + (p1[1] - p0[1]) * frac)], fill=fill, width=width)
 
 
-def source(d, s, a=1.0):
-    """Small source line, bottom-right, above the subtitle zone."""
-    if s:
-        text(d, (W - int(W * 0.05), 820), s, F("sans", 22), C.MUTED, anchor="ra", a=a)
-
-
-def title_line(d, s, t=0.0, delay=0.1):
-    """Graphic heading at the top-left safe corner."""
-    text(d, (96, 96), s, F("sans_medium", 32), C.TEXT, "la", ramp(t, delay, 0.5))
-
-
 def nl(s):
     return (s or "").replace("\\N", "\n").replace("\\n", "\n")
 
@@ -116,25 +111,6 @@ def photo_bg(path, darkness=0.85, blur=6):
     left, top = (im.width - W) // 2, (im.height - H) // 2
     im = im.crop((left, top, left + W, top + H)).filter(ImageFilter.GaussianBlur(blur))
     return Image.blend(im.convert("L").convert("RGB"), Image.new("RGB", (W, H), C.BG), darkness)
-
-
-# ---------------------------------------------------------------- paper documents
-def paper(w, h, seed=3):
-    im = Image.new("RGBA", (w, h), C.PAPER + (255,))
-    noise = (np.random.RandomState(seed).rand(h, w) * 16).astype(np.uint8)
-    arr = np.array(im)
-    arr[..., :3] = np.clip(arr[..., :3].astype(int) - noise[..., None], 0, 255)
-    return Image.fromarray(arr)
-
-
-def place(im, layer, a, cx, cy, angle=0.0, shadow=True):
-    pp = layer.rotate(angle, expand=True, resample=Image.BICUBIC) if angle else layer
-    alpha = pp.split()[3].point(lambda v: int(v * a))
-    if shadow:
-        sh = Image.new("RGBA", pp.size, (0, 0, 0, 140))
-        im.paste(sh, (int(cx - pp.width / 2 + 14), int(cy - pp.height / 2 + 16)), alpha.point(lambda v: int(v * 0.6)))
-    im.paste(pp, (int(cx - pp.width / 2), int(cy - pp.height / 2)), alpha)
-    return (cx - pp.width / 2, cy - pp.height / 2, cx + pp.width / 2, cy + pp.height / 2)
 
 
 # ---------------------------------------------------------------- param helpers

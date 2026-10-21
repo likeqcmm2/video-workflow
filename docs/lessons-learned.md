@@ -23,5 +23,11 @@ The result was good; the path was expensive. Each row below is a measured cost a
 
 What worked and is kept unchanged: the style-profile-first method, the hard length gate with a locked hook,
 scouting before writing, one TTS call per scene with back-transcription, sentence-aligned cuts and subtitles,
-the documentary_dark grade (desaturation, warm LUT, vignette, grain, bottom gradient), contained archival
-footage on blurred backgrounds, on-screen credits, chapter music with ducking, two review rounds.
+a colour grade designed for the film's era and material (its parameters are now generic grade controls, its
+values belong to that film only), contained archival footage on blurred backgrounds, on-screen credits,
+chapter music with ducking, two review rounds.
+
+Second lesson (after the first version of this repo): built-in colour presets and a graphics template library
+pulled every film towards the same look — one "documentary" preset cannot fit a 1940s war film, a 1986 TV-era
+disaster and a modern tech story. The repo now keeps only technique and technical traps; every film designs its
+own grade, typography, graphics and animation, and preflight refuses to render until those decisions exist.

@@ -17,3 +17,5 @@ tests/*/out/
 tests/negative/*
 !tests/negative/make.py
 tests/smoke/sources*.md
+vendor
+projects

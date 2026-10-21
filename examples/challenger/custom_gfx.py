@@ -3,8 +3,8 @@
 They show the quality bar for project-specific graphics: mechanism diagrams (g_joint, g_oring, g_srb, g_stack),
 data graphics built from a documented dataset (g_incidents, g_chart from Dalal et al. 1989), reconstructed
 documents labelled as reconstructions (g_doc, g_memo), and small explanatory cards.
-New projects should first try the library templates (engine/vf/gfx/library.py) and write custom code only for
-what the library cannot show.
+They are this film's design (1986 archive disaster: dark paper, serif, restrained red). New films design their own
+graphics for their genre and era; reuse techniques from here, not the look.
 """
 import math
 import os

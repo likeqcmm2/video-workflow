@@ -1,16 +1,16 @@
-"""Graphics registry: library templates + the project's own custom_gfx.py.
+"""Graphics registry: the project's own custom_gfx.py. There is no built-in style library on purpose -
+every film designs its graphics, cards and animation for its genre, era and material (docs/08).
 
-    from vf.gfx import render
-    img = render("bars", {"spec": "flights"}, t=1.0, dur=6.0)
+    # custom_gfx.py (next to project.yaml)
+    from PIL import ImageDraw
+    from vf.gfx.core import C, F, W, H, canvas, text, ramp, ease, mix     # neutral primitives
+    from vf.gfx import kit                                                # maps, scales, paper
+    def g_chapter(p, t, dur):          # becomes  gfx:chapter  (also used for chapter cards)
+        im = canvas(); d = ImageDraw.Draw(im); ...; return im           # RGB, or RGBA for overlays
 
-Project extension (custom_gfx.py next to project.yaml):
-
-    from vf.gfx.core import *            # C, F, text, ramp, canvas, ...
-    def g_joint(p, t, dur):               # becomes  gfx:joint
-        im = canvas(); d = ImageDraw.Draw(im); ...; return im
-
-graphics.yaml (optional) holds structured parameters:   flights: {labels: [...], values: [...]}
-and is referenced from VIS lines with  spec=flights . Inline VIS options override spec values.
+graphics.yaml (optional) holds structured parameters referenced from VIS lines with  spec=<id>;
+inline VIS options override spec values. Complex motion (3D, particles, long animations) is better
+rendered with a dedicated tool into a clip and used as  anim:<file>  (docs/08).
 """
 import importlib.util
 import sys
@@ -22,7 +22,6 @@ from PIL import Image
 
 from . import core
 from .core import BOXES, P
-from .library import REG as LIB
 
 
 @lru_cache(None)
@@ -44,9 +43,7 @@ def _specs():
 
 
 def registry():
-    reg = dict(LIB)
-    reg.update(_custom())
-    return reg
+    return dict(_custom())
 
 
 def params(opts):
@@ -60,16 +57,18 @@ def params(opts):
     return P(base)
 
 
-def render(name, opts, t, dur, track=False):
+def render(name, opts, t, dur, track=False, rgba=False):
     reg = registry()
     if name not in reg:
-        raise KeyError(f"unknown graphic {name!r}; library: {sorted(LIB)}; custom: {sorted(_custom())}")
+        raise KeyError(f"graphic {name!r} is not defined in custom_gfx.py (defined: {sorted(reg)})")
     BOXES.clear()
     im = reg[name](params(opts), t, dur)
     from .. import config
     W, H, _ = config.size()
     if im.size != (W, H):
         im = im.resize((W, H), Image.LANCZOS)
-    if im.mode != "RGB":
+    if rgba:
+        im = im.convert("RGBA")
+    elif im.mode != "RGB":
         im = im.convert("RGB")
     return (im, list(BOXES)) if track else im

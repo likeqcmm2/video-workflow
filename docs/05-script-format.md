@@ -11,7 +11,7 @@ VIS: TAPE @5:19.0 | stamp=1986年1月28日　午前11時38分（米東部時間�
 
 #### S012 | pause=3.0
 NAR: 今回は、チャレンジャー号爆発事故の真相を解き明かしていきます。
-VIS: gfx:title | text=チャレンジャー号爆発事故 | kicker=1 9 8 6 . 1 . 2 8 | sub=打ち上げ73秒後の空中分解
+VIS: gfx:title | text=チャレンジャー号爆発事故 | sub=打ち上げ73秒後の空中分解      ← g_title in this film's custom_gfx.py
 
 ## BODY
 ### CH1 | 第1章 | 夢の宇宙船
@@ -36,7 +36,8 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 | `img:assets/x.jpg` | any local image (needs `credit=`, or `credit=none` for own material) |
 | `nasa:S86-38989` | NASA image fetched with `vf nasa fetch` |
 | `cm:File title.jpg` | Wikimedia Commons file fetched with `vf commons fetch` (credit from licence metadata) |
-| `gfx:<template>` | library graphic (docs/08) or `custom_gfx.py` function |
+| `gfx:<name>` | this film's graphic: function `g_<name>` in `custom_gfx.py` (docs/08) |
+| `anim:assets/anim/x.mp4` | animation clip rendered with an external tool (Manim, Remotion, Blender, Three.js, After Effects…) — counts as graphics, not graded like footage (docs/08) |
 
 ## Shot options (`| key=value`)
 | Option | Applies to | Effect |
@@ -48,6 +49,12 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 | `lt=Name／Role` | any | lower third (name + role) |
 | `credit=…` / `credit=none` | any | override the automatic on-screen credit |
 | `dim=0.2` | any | darken (for quiet moments) |
+| `grade=<name>` | any | use another grade from `design.grades` for this shot (default: chapter's, else `main`) |
+| `zoom=0.12` | stills | Ken Burns amount for this shot (default `design.motion.still_zoom`) |
+| `push=0.04` | video | slow push-in amount (default `design.motion.video_push`; 0 = none) |
+| `in=fade:0.5` / `in=dissolve:0.8` / `out=fade:1.0` | any | transition into / out of this shot (`cut` = none) |
+| `overlay=gfx:<name>` / `overlay=anim:<file>` | any | composite an RGBA graphic or an alpha clip over the shot (`overlay_in=` seconds into the clip) |
+| `class=real/graphic` | any | override how the shot counts in the real-footage share (e.g. a filmed reconstruction) |
 | `w=1.5` | multi-shot scenes | relative duration when not split by sentences |
 | `min_speed=0.5` | video | lowest allowed slow-down (preflight still errors < 0.6) |
 | `cross_cuts=1` | video | the detected "cut" after the in-point is a flash/explosion, not an edit — verified on a dense contact sheet; black ranges are still respected |
@@ -56,9 +63,10 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 | `allow_low=1` | gfx | text may enter the subtitle zone (only for scenes without subtitles) |
 | `\N` | text params | line break |
 
-Scene header options: `#### S123 | pause=1.5` (extra silence after the scene), `subs=off/on` (force
-subtitles off/on; default off only for quote cards that show the same words).
-Chapter header options: `### CH3 | 第3章 | 運命の前夜 | card=none` (no chapter card), `card_dur=4`.
+Scene header options: `#### S123 | pause=1.5` (extra silence after the scene), `subs=off` (no subtitles for
+this scene — e.g. when the picture already shows the same words; nothing is hidden automatically).
+Chapter header options: `### CH3 | 第3章 | 運命の前夜 | card=none` (no chapter card), `card_dur=4`,
+`grade=<name>` (grade for every shot of the chapter).
 
 ## Length gate (hard stop before any voice work)
 ```bash

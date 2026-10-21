@@ -21,7 +21,7 @@ import cv2
 import numpy as np
 
 from . import config
-from .compositor import VideoReader, image_frame, load_image, video_frame
+from .compositor import OverlayReader, VideoReader, composite, image_frame, load_image, video_frame
 from .look import Look
 
 OUT = Path("out")
@@ -62,6 +62,9 @@ def chapter_hash(tl, chid, engine_sig=None):
     ass = OUT / f"ass_{chid}.ass"
     h.update(ass.read_bytes() if ass.exists() else b"")
     for e in items:
+        ov = e.get("opts", {}).get("overlay", "")
+        if ov.startswith("anim:"):
+            h.update(_file_sig(ov[5:]).encode())
         if e["type"] == "shot" and e.get("path") and e["kind"] != "gfx":
             h.update(_file_sig(e["path"]).encode())
             if e["kind"] == "video":
@@ -92,6 +95,14 @@ def encoder_args(threads):
             "-profile:v", "high", "-r", str(FPS), "-g", str(FPS * 2), "-threads", str(threads)]
 
 
+def _trans(spec):
+    """'fade:0.5' | 'dissolve:0.6' | 'cut' | None -> (kind or None, seconds)."""
+    if not spec or spec == "cut":
+        return None, 0.0
+    kind, _, sec = str(spec).partition(":")
+    return kind, float(sec or 0.5)
+
+
 def render_chapter(chid, threads=2):
     from . import gfx
     W, H, FPS = config.size()
@@ -115,8 +126,12 @@ def render_chapter(chid, threads=2):
                             "-r", str(FPS), "-i", "-", "-vf", vf, *encoder_args(threads), "-an", str(tmp)],
                            stdin=subprocess.PIPE)
     d = cfg["design"]
-    reader, idx = None, -1
+    tr = d["transitions"]
+    card_gfx = d["chapter_card"].get("gfx") or "chapter"
+    reader, ov_reader, idx = None, None, -1
     card_ends = {round(c["t1"], 3) for c in items if c["type"] == "card"}
+    prev_out = None          # last written frame of the previous item (for dissolves)
+    hold = None
     t_start = time.time()
     try:
         for fi in range(f0, f1):
@@ -126,14 +141,19 @@ def render_chapter(chid, threads=2):
                 if items[k]["t0"] - 1e-6 <= t < items[k]["t1"] - 1e-6:
                     e = items[k]
                     if k != idx:
-                        if reader:
-                            reader.close()
-                            reader = None
+                        for r_ in (reader, ov_reader):
+                            if r_:
+                                r_.close()
+                        reader = ov_reader = None
                         idx = k
+                        hold = prev_out
                         if e["type"] == "shot" and e["kind"] == "video":
                             reader = VideoReader(e["path"], e["in"] or 0.0, e["t1"] - e["t0"],
                                                  float(e["opts"].get("min_speed", 0.5)),
                                                  e["opts"].get("cross_cuts") == "1")
+                        ov = e.get("opts", {}).get("overlay", "")
+                        if ov.startswith("anim:"):
+                            ov_reader = OverlayReader(ov[5:], e["t1"] - e["t0"], float(e["opts"].get("overlay_in", 0)))
                     break
             photo = False
             if e is None:
@@ -143,31 +163,56 @@ def render_chapter(chid, threads=2):
                 lt = t - e["t0"]
                 u = lt / max(dur, 1e-3)
                 if e["type"] == "card":
-                    frame = np.array(gfx.render("chapter", {"num": e["num"], "title": e["title"]}, lt, dur))
+                    frame = np.array(gfx.render(card_gfx, {"num": e["num"], "title": e["title"], **e.get("opts", {})}, lt, dur))
                 elif e["kind"] == "gfx":
                     frame = np.array(gfx.render(e["path"], e["opts"], lt, dur))
                 elif e["kind"] == "image":
                     frame = image_frame(load_image(e["path"]), e["opts"], u)
                     photo = True
                 elif e["kind"] == "video":
-                    frame = video_frame(reader.read(), reader, u)
-                    photo = True
+                    push = float(e["opts"]["push"]) if "push" in e["opts"] else None
+                    frame = video_frame(reader.read(), reader, u, push)
+                    photo = e.get("cls", "real") == "real"      # animation clips are not graded like footage
                 else:
                     raise SystemExit(f"unrenderable shot {e.get('scene')} {e.get('src')}")
                 dim = float(e["opts"].get("dim", 0)) if e["type"] == "shot" else 0
                 if dim:
                     frame = cv2.convertScaleAbs(frame, alpha=1 - dim)
-            frame = look.apply(frame, fi, photo)
-            if first and t < d["fade_in_start"]:
-                frame = cv2.convertScaleAbs(frame, alpha=t / d["fade_in_start"])
-            if last and t > end_t0 - d["fade_out_end"]:
-                frame = cv2.convertScaleAbs(frame, alpha=max(0.0, 1 - (t - (end_t0 - d["fade_out_end"])) / d["fade_out_end"]))
-            if e is not None and e["type"] == "shot" and round(e["t0"], 3) in card_ends and t - e["t0"] < 0.5:
-                frame = cv2.convertScaleAbs(frame, alpha=(t - e["t0"]) / 0.5)
+            frame = look.apply(frame, fi, photo, (e or {}).get("grade"))
+            if e is not None and e["type"] == "shot":
+                ov = e["opts"].get("overlay", "")
+                if ov.startswith("gfx:"):
+                    frame = composite(frame, gfx.render(ov[4:], e["opts"], t - e["t0"], e["t1"] - e["t0"], rgba=True))
+                elif ov_reader:
+                    frame = composite(frame, ov_reader.read())
+            # transitions: shot option in=/out=, chapter-card and film defaults (design.transitions)
+            if e is not None:
+                lt, dur = t - e["t0"], e["t1"] - e["t0"]
+                tin = e.get("opts", {}).get("in")
+                if not tin and e["type"] == "shot" and round(e["t0"], 3) in card_ends:
+                    tin = tr.get("after_card")
+                kind, sec = _trans(tin)
+                if kind and lt < sec:
+                    a = lt / sec
+                    if kind == "fade":
+                        frame = cv2.convertScaleAbs(frame, alpha=a)
+                    elif kind == "dissolve" and hold is not None:
+                        frame = cv2.addWeighted(hold, 1 - a, frame, a, 0)
+                kind, sec = _trans(e.get("opts", {}).get("out"))
+                if kind == "fade" and dur - lt < sec:
+                    frame = cv2.convertScaleAbs(frame, alpha=max(0.0, (dur - lt) / sec))
+            kind, sec = _trans(tr.get("film_in"))
+            if first and kind and t < sec:
+                frame = cv2.convertScaleAbs(frame, alpha=t / sec)
+            kind, sec = _trans(tr.get("film_out"))
+            if last and kind and t > end_t0 - sec:
+                frame = cv2.convertScaleAbs(frame, alpha=max(0.0, 1 - (t - (end_t0 - sec)) / sec))
+            prev_out = frame
             enc.stdin.write(frame.tobytes())
     finally:
-        if reader:
-            reader.close()
+        for r_ in (reader, ov_reader):
+            if r_:
+                r_.close()
         enc.stdin.close()
         rc = enc.wait()
     if rc != 0:

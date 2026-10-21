@@ -5,7 +5,8 @@
 
 | Check | Catches | Why it exists |
 |---|---|---|
-| fonts, libass | missing fonts / filter | broken subtitles |
+| design | any design decision missing (grade, palette, fonts, card, motion, real % range) | no film renders on an assumed style |
+| fonts, libass | font family of subtitles/credits/stamps not installed; **glyphs missing** in a graphic's font | libass substitutes silently; decorative fonts lack kanji/diacritics |
 | length gate | hook ±15 %, total ≥ min, stamp line | hard rule of the brief |
 | voice | missing, placeholder, **narration edited after TTS**, similarity < 0.80 (error) / < 0.93 (warn) | stale or misread voice |
 | assets | missing files, unknown sources, GIF as still, **alt fallback in use** (warn) | a silent fallback once rendered an empty card |
@@ -14,7 +15,7 @@
 | stills | unreadable, too small for full-frame (`fit=contain`), static too long, same still > 3 times | soft or repetitive pictures |
 | graphics | render errors, **text outside the 5 % safe area**, **text in the subtitle block**, overlapping text | an overflowing label was found only by eye |
 | subtitles | > 2 lines, over-long lines, a line starting with 、。」ー or small kana, events < 0.6 s | broken Japanese line breaks needed six rounds of fixes |
-| ratio | real vs graphics far from the director's target | genre drift |
+| ratio | real-footage share outside `director.real_pct` for the film, and per chapter beyond ± `chapter_tolerance` unless the chapter is in `chapter_exceptions` (INFO prints the share and the reason) | genre drift; a chapter silently turning into slides |
 | timing | scenes split by weight (sync to check by eye) | picture ≠ word |
 | Wikimedia | pending downloads | missing pictures |
 
@@ -29,11 +30,12 @@ Spawn review sub-agents in parallel, **≤ 2 chapters each** (≈ 4–8 sheets p
 sheets yourself — you read their issue lists. Prompt template:
 
 > You are a demanding viewer reviewing a <GENRE> documentary for <AUDIENCE>. Director notes: <3–5 lines from
-> script.md: genre, look, pace, real/graphics target, don'ts>. Look at every tile of these review sheets:
+> script.md: genre, era, visual direction, pace, real-footage range, don'ts>. Look at every tile of these review sheets:
 > <paths>. Tiles are labelled with film time and scene id; `<manifest.json>` gives each tile's source and type,
 > and the narration of each scene is in `<script.md>` (NAR lines).
 > Check, in this order:
-> 1. Style: does it look like this genre? Anything template-like that could belong to any other video?
+> 1. Style: does it fit this genre, era and story? Anything generic that could belong to any other video?
+>    Do graphics, animation and footage feel like one film?
 > 2. Text: overlapping text, text over faces/logos/captions in the footage, cut-off or overflowing text,
 >    typos, low contrast, subtitle line breaks inside words.
 > 3. Picture: distortion, unintended black/blank frames, watermarks, stretched low-res images.

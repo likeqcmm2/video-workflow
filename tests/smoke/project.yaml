@@ -3,8 +3,23 @@ language: ja
 length: {unit: chars, min: 150, sample_hook: 60, hook_tolerance: 0.5}
 voice:
   readings: {"NASA": "ナサ"}
-director: {genre: test, target_real_pct: 40}
-design: {look: documentary_dark}
+director:
+  genre: test
+  real_pct: {min: 20, max: 70}
+  chapter_tolerance: 15
+  chapter_exceptions: {CH1: "test chapter built from graphics"}
+design:                      # every value is a decision of this (test) film - nothing is a default style
+  grades:
+    main: {desat: 0.2, contrast: 1.05, warm: [1.02, 1.0, 0.97], vignette: 0.25, grain: 5, gfx_grain: 2, bottom: 0.6}
+    archive: {desat: 1.0, contrast: 1.12, vignette: 0.35, grain: 9, gfx_grain: 3, bottom: 0.6}
+  palette: {bg: "#101418", text: "#ece6da", muted: "#8f8a80", accent: "#d0643c", secondary: "#8fb3c9", paper: "#e9e4d8", ink: "#22201c", line: "#beb8ac"}
+  fonts: {display: NotoSerifJP-500.ttf, display_bold: NotoSerifJP-700.ttf, text: NotoSansJP-400.ttf, text_medium: NotoSansJP-500.ttf, mono: NotoSansMono-400.ttf}
+  subtitle: {font: "Noto Sans JP Medium"}
+  credit: {font: "Noto Sans JP"}
+  stamp: {font: "Noto Sans JP Medium"}
+  lower_third: {name_font: "Noto Serif JP Medium", role_font: "Noto Sans JP"}
+  chapter_card: {enabled: true, duration: 3.0, gfx: chapter}
+  motion: {still_zoom: 0.08}
 assets:
   CLIP: {path: assets/video/clip.mp4, credit: "映像：テスト素材", license: "synthetic", link: "-"}
 music:

@@ -7,12 +7,12 @@ Phases run in order. Each ends with a **gate**: do not start the next phase unti
 |---|---|---|---|---|
 | 0 | Setup | project skeleton, env OK | `vf doctor` clean, PROGRESS.md started | below |
 | 1 | Style profile | profile at top of script.md, `length.sample_hook` | profile has hook analysis + must/never rules | docs/01 |
-| 2 | Director notes | genre, look preset, target real % | notes written before any script text | docs/02 |
+| 2 | Director notes | genre/era/material, real % range, visual direction | notes written before any script text | docs/02 |
 | 3 | Research | research/facts.md, chapter outline | enough verified material for the minimum length | docs/03 |
 | 4 | Footage scouting | research/shotlist.md, assets/, `vf media scan` | every chapter has its own real visuals (or a written gap) | docs/04 |
 | 5 | Script + shot list | script.md (HOOK/BODY/CH/S, NAR/VIS) | `vf count --stamp` → GATE: PASS | docs/05 |
 | 6 | Voice | out/vo/*.wav | all scenes ≥ 0.93 similarity or reviewed+accepted | docs/06 |
-| 7 | Design system | design section in script.md, project.yaml design | custom graphics previewed | docs/07 |
+| 7 | Design system | design section in script.md, project.yaml design, custom_gfx.py / anim clips | every design decision filled, graphics previewed | docs/07, 08 |
 | 8 | Edit + render | out/ch_*.mp4 | `vf preflight` 0 errors before rendering | docs/08 |
 | 9 | Audio | out/mix.wav | music per chapter, voice clearly on top | docs/09 |
 | 10 | Review ×2 | issue lists, fixes | round 2 clean, `vf qa` 0 errors | docs/10 |
@@ -42,8 +42,10 @@ cd projects/<slug>
 - After this the sample is not re-read; the profile is the reference (context budget).
 
 ## Phase 2 — Director notes (before writing narration)
-- Genre → table in docs/02 → emotion, real/graphics ratio (`director.target_real_pct`), pace, transitions,
-  text style, colour (`design.look` preset), sound, three don'ts, how long films stay varied per chapter.
+- From the title: genre AND sub-genre, era, place, the material that exists, the emotion. docs/02's table is
+  a starting point to reason from — decide for THIS film: real-footage range (`director.real_pct: {min, max}`,
+  chapter exceptions with reasons), pace, transitions, text behaviour, colour, sound, three don'ts, how a long
+  film stays varied per chapter.
 
 ## Phase 3 — Research (sub-agents)
 - Fan out 2–4 research sub-agents (by language / by period / by people) with the template in docs/03.
@@ -59,7 +61,8 @@ cd projects/<slug>
   (time ranges, content, people, burned-in text, quality). You keep only `research/shotlist.md`.
 - Register reusable videos in project.yaml `assets` (path, credit, link, license, rights_check, crop, desat).
 - Rights groups A/B/C and the `copyright_level` rules: docs/04. Sensitive-image rules: docs/04.
-- Gate: real material per chapter matches the director's ratio, or the gap is written down for the report.
+- Gate: real material per chapter fits the director's range, or the gap is declared as a chapter exception
+  (with the reason) and written down for the report.
 
 ## Phase 5 — Script + shot list
 - Write script.md exactly in the format of docs/05 (HOOK / BODY / `### CHn | num | title` / `#### Sxxx` / NAR / VIS).
@@ -76,10 +79,12 @@ cd projects/<slug>
 - Record the total voice duration in PROGRESS.md.
 
 ## Phase 7 — Design system
-- Define once (docs/07): look preset, palette, ≤2 font families, title/chapter/lower-third/credit styles,
-  footage treatment, transitions, safe area. Write it into script.md and project.yaml `design`.
-- Library graphics first (docs/08 table). Custom graphics only for what the library cannot show
-  (`custom_gfx.py`); preview each with `$VF gfx-preview <name> k=v` and look at the PNG yourself (1 image).
+- Design the look for THIS film (docs/07) — there are no presets or templates: colour grade(s), palette,
+  fonts, title/chapter/lower-third/credit styles, footage treatment, motion, transitions. Write it into
+  script.md and project.yaml `design`; `$VF preflight` lists any decision still missing.
+- Build every graphic for this film in `custom_gfx.py` (docs/08: primitives, kit, overlays); complex motion
+  (3D, particles, long animated sequences) with an external tool rendered to a clip (`anim:`, docs/08).
+  Preview each with `$VF gfx-preview <name> k=v` and look at the PNG yourself (1 image).
 
 ## Phase 8 — Edit + render
 ```bash
@@ -97,7 +102,8 @@ $VF render --changed     # background; parallel chapters; subtitles burned in; o
   → they return JSON issue lists → fix → `$VF plan && $VF preflight && $VF render --changed`.
 - Round 2: `$VF final && $VF qa` (0 errors) + sheets at 3 s for every chapter changed since round 1 + a
   6 s skim of the whole film by a fresh sub-agent. Repeat until a round finds nothing to fix.
-- Style comes first: does it look like the genre, is anything template-like, is the real/graphics ratio right?
+- Style comes first: does it fit this genre, era and story; does anything look generic; is the real/graphics
+  share inside the range (preflight reports it per chapter)?
 
 ## Phase 11 — Deliver (docs/11)
 ```bash

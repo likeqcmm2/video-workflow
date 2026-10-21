@@ -31,32 +31,33 @@ DEFAULTS = {
         "workers": 4,
         "readings": {},                      # display text -> what TTS should read
     },
-    "director": {"genre": "", "target_real_pct": 70},
+    "director": {
+        "genre": "",
+        "real_pct": {"min": None, "max": None},   # REQUIRED range of real footage/photos in shot time (Phase 2)
+        "chapter_tolerance": 15,                   # a chapter may deviate this many points from the range ...
+        "chapter_exceptions": {},                  # ... unless listed here with a reason: {CH2: "mechanism has no footage"}
+    },
+    # design: NO style defaults. Every film decides its own look (docs/07). Only technical values have defaults.
     "design": {
-        "look": "documentary_dark",
-        "palette": {"bg": "#0d1014", "text": "#e8e2d6", "muted": "#8f8a80", "dim": "#46484c",
-                    "accent": "#c8553d", "secondary": "#9fb7c9", "paper": "#e9e4d8", "ink": "#22201c",
-                    "line": "#beb8ac", "card_bg": "#080a0d"},
-        "fonts": {"serif": "NotoSerifJP-500.ttf", "serif_bold": "NotoSerifJP-700.ttf",
-                  "sans": "NotoSansJP-400.ttf", "sans_medium": "NotoSansJP-500.ttf",
-                  "sans_bold": "NotoSansJP-700.ttf", "mono": "NotoSansMono-400.ttf"},
-        "subtitle": {"font": "Noto Sans JP Medium", "size": 50, "max_chars": 24, "slack": 4,
-                     "margin_v": 62, "outline": 2.6, "shadow": 1.2, "spacing": 1},
-        "credit": {"font": "Noto Sans JP", "size": 22},
-        "stamp": {"font": "Noto Sans JP Medium", "size": 28},
-        "lower_third": {"name_font": "Noto Serif JP Medium", "name_size": 44,
-                        "role_font": "Noto Sans JP", "role_size": 28},
-        "chapter_card": {"enabled": True, "duration": 3.6},
-        "safe_margin": 0.05,                 # fraction of width/height kept clear of text
+        "grades": {},           # REQUIRED: {main: {desat, contrast, warm, vignette, grain, gfx_grain, bottom}, <other>: {...}}
+        "palette": {},          # REQUIRED: colours your graphics use; "text" is also used for the lower-third name
+        "fonts": {},            # REQUIRED: role -> font file in vendor/fonts (roles are yours: e.g. display, text, mono)
+        "subtitle": {"font": None, "size": 50, "max_chars": 24, "slack": 4,      # font: REQUIRED family name
+                     "margin_v": 62, "outline": 2.6, "shadow": 1.2, "spacing": 1,
+                     "colour": "#f2f2f2"},
+        "credit": {"font": None, "size": 22},                                     # font: REQUIRED family name
+        "stamp": {"font": None, "size": 28},                                      # font: REQUIRED family name
+        "lower_third": {"name_font": None, "name_size": 44, "role_font": None, "role_size": 28, "plate": True},
+        "chapter_card": {"enabled": None, "duration": 3.6, "gfx": "chapter"},     # enabled: REQUIRED decision
+        "transitions": {"film_in": "fade:0.6", "film_out": "fade:1.5", "after_card": "fade:0.5"},
+        "motion": {"still_zoom": None, "video_push": 0.025},                     # still_zoom: REQUIRED (0 = static)
+        "safe_margin": 0.05,                 # technical: fraction of width/height kept clear of text
         "subtitle_zone_top": None,           # gfx text must stay above this y; None = derived from subtitle style
-        "kenburns": 0.10,                    # max zoom for still images
-        "fade_in_start": 0.6,                # fade from black at the start of the film
-        "fade_out_end": 1.5,                 # fade to black before the end
     },
     "labels": {"photo": "写真：", "video": "映像：", "map": "地図：", "source": "出典：",
                "public_domain": "パブリックドメイン", "commons": "Wikimedia Commons",
                "reenactment": "再現", "photo_year": "写真は{year}年", "sep": "／", "paren": ["（", "）"]},
-    "timing": {"lead": 0.15, "gap": 0.30, "quote_extra": 0.5, "chapter_end_extra": 1.2,
+    "timing": {"lead": 0.15, "gap": 0.30, "chapter_end_extra": 1.2,
                "end_black": 3.0, "max_still": 8.0},
     "assets": {},                            # registered video sources: ID -> {path, credit, crop, desat}
     "music": {"chapters": {}, "default": None, "level_between": 0.22, "level_under_voice": 0.09,
@@ -68,30 +69,16 @@ DEFAULTS = {
 }
 
 LANG_DEFAULTS = {
-    # language -> overrides applied before project.yaml (fonts, subtitle sizes, labels)
+    # language -> linguistic/technical defaults only (credit labels, subtitle line length, length unit). Fonts are
+    # a design decision of each film (docs/07); `scripts/fetch_fonts.py` downloads any Google Fonts family.
     "ja": {},
-    "zh": {"design": {"fonts": {"serif": "NotoSerifSC-500.ttf", "serif_bold": "NotoSerifSC-700.ttf",
-                                "sans": "NotoSansSC-400.ttf", "sans_medium": "NotoSansSC-500.ttf",
-                                "sans_bold": "NotoSansSC-700.ttf"},
-                      "subtitle": {"font": "Noto Sans SC Medium", "max_chars": 22},
-                      "credit": {"font": "Noto Sans SC"}, "stamp": {"font": "Noto Sans SC Medium"},
-                      "lower_third": {"name_font": "Noto Serif SC Medium", "role_font": "Noto Sans SC"}},
+    "zh": {"design": {"subtitle": {"max_chars": 22}},
            "labels": {"photo": "图片：", "video": "视频：", "map": "地图：", "source": "来源：",
                       "public_domain": "公有领域", "reenactment": "再现", "photo_year": "摄于{year}年"}},
-    "ko": {"design": {"fonts": {"serif": "NotoSerifKR-500.ttf", "serif_bold": "NotoSerifKR-700.ttf",
-                                "sans": "NotoSansKR-400.ttf", "sans_medium": "NotoSansKR-500.ttf",
-                                "sans_bold": "NotoSansKR-700.ttf"},
-                      "subtitle": {"font": "Noto Sans KR Medium", "max_chars": 20},
-                      "credit": {"font": "Noto Sans KR"}, "stamp": {"font": "Noto Sans KR Medium"},
-                      "lower_third": {"name_font": "Noto Serif KR Medium", "role_font": "Noto Sans KR"}},
+    "ko": {"design": {"subtitle": {"max_chars": 20}},
            "labels": {"photo": "사진: ", "video": "영상: ", "map": "지도: ", "source": "출처: ",
                       "public_domain": "퍼블릭 도메인", "reenactment": "재현", "photo_year": "{year}년 촬영"}},
-    "_latin": {"design": {"fonts": {"serif": "NotoSerif-500.ttf", "serif_bold": "NotoSerif-700.ttf",
-                                    "sans": "NotoSans-400.ttf", "sans_medium": "NotoSans-500.ttf",
-                                    "sans_bold": "NotoSans-700.ttf"},
-                          "subtitle": {"font": "Noto Sans Medium", "size": 48, "max_chars": 42, "slack": 6},
-                          "credit": {"font": "Noto Sans"}, "stamp": {"font": "Noto Sans Medium"},
-                          "lower_third": {"name_font": "Noto Serif Medium", "role_font": "Noto Sans"}},
+    "_latin": {"design": {"subtitle": {"size": 48, "max_chars": 42, "slack": 6}},
                "length": {"unit": "words"},
                "labels": {"photo": "Photo: ", "video": "Footage: ", "map": "Map: ", "source": "Source: ",
                           "public_domain": "public domain", "reenactment": "Reconstruction",
@@ -155,3 +142,36 @@ def subtitle_zone_top():
         return d["subtitle_zone_top"] * size()[1] / 1080
     st = d["subtitle"]
     return size()[1] - st["margin_v"] - 2 * st["size"] * 1.25 - 6
+
+
+GRADE_KEYS = {"desat": 0.0, "contrast": 1.0, "warm": [1.0, 1.0, 1.0], "vignette": 0.0, "grain": 0.0,
+              "gfx_grain": 0.0, "bottom": 1.0}
+
+
+def design_missing():
+    """Design decisions that must be made in Phase 7 before rendering (no style is assumed)."""
+    d = load()["design"]
+    miss = []
+    if not d.get("grades", {}).get("main"):
+        miss.append("design.grades.main (colour grade of this film)")
+    for name, g in (d.get("grades") or {}).items():
+        unknown = set(g) - set(GRADE_KEYS)
+        if unknown:
+            miss.append(f"design.grades.{name}: unknown keys {sorted(unknown)} (allowed: {sorted(GRADE_KEYS)})")
+    if not d.get("palette", {}).get("text"):
+        miss.append("design.palette (at least 'text')")
+    if not d.get("fonts"):
+        miss.append("design.fonts (role -> font file)")
+    for k, v in (("subtitle.font", d["subtitle"]["font"]), ("credit.font", d["credit"]["font"]),
+                 ("stamp.font", d["stamp"]["font"]), ("lower_third.name_font", d["lower_third"]["name_font"]),
+                 ("lower_third.role_font", d["lower_third"]["role_font"])):
+        if not v:
+            miss.append(f"design.{k} (font family name)")
+    if d["chapter_card"]["enabled"] is None:
+        miss.append("design.chapter_card.enabled (true/false)")
+    if d["motion"]["still_zoom"] is None:
+        miss.append("design.motion.still_zoom (Ken Burns amount, 0 = static)")
+    r = load()["director"]["real_pct"]
+    if r.get("min") is None or r.get("max") is None:
+        miss.append("director.real_pct {min, max} (Phase 2)")
+    return miss

@@ -54,7 +54,8 @@ def stats():
          "voice_s": round(sum(v["dur"] for v in vo), 1),
          "voice_mean_sim": round(sum(v["sim"] for v in vo) / max(1, len(vo)), 3),
          "voice_min_sim": min((v["sim"] for v in vo), default=0),
-         "ratio_pct": rt, "real_pct": round(rt.get("image", 0) + rt.get("video", 0), 1),
+         "ratio_pct": rt, "real_pct": rt["real"], "graphic_pct": rt["graphic"],
+         "director_range": config.load()["director"]["real_pct"],
          "shots": len(shots), "scenes": c["scenes"], "shots_by_source": dict(srcs),
          "commons_files_on_screen": len(commons_used), "wikimedia": wm}
     (OUT / "stats.json").write_text(json.dumps(s, ensure_ascii=False, indent=1))

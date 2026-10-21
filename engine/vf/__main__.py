@@ -21,7 +21,7 @@ Footage
 Build
   plan                           timeline + ASS (prints asset errors)
   preflight                      ALL automated checks before rendering (must end with 0 errors)
-  gfx-list                       every graphic template with its parameters (library + custom_gfx.py)
+  gfx-list                       the graphics defined in custom_gfx.py with their docstrings
   gfx-preview <name> [k=v ...] [t=2.5] [dur=6]   one graphic -> out/gfx_preview/<name>.png + bounds check
   render [--changed | all | CH1 CH2 ...] [-j N]
   audio | final | qa             mix | concat-copy + mux | post-render checks
@@ -135,10 +135,12 @@ def main(argv):
         return 0 if preflight() else 1
     elif cmd == "gfx-list":
         from . import gfx
-        from .gfx.library import REG as LIB
-        for name, fn in sorted(gfx.registry().items()):
+        reg = gfx.registry()
+        if not reg:
+            print("custom_gfx.py defines no graphics yet (functions named g_<name>)")
+        for name, fn in sorted(reg.items()):
             doc = " ".join((fn.__doc__ or "").split())
-            print(f"{name:12s} {'[custom] ' if name not in LIB or fn is not LIB[name] else ''}{doc}")
+            print(f"{name:14s} {doc}")
     elif cmd == "gfx-preview":
         from . import gfx
         kv = dict(a.split("=", 1) for a in args[1:] if "=" in a)

@@ -2,7 +2,9 @@
 placeholder (lesson: a GIF fallback once rendered an empty card that only a human review caught).
 
 Sources
-  gfx:<template>         code-built graphic (vf.gfx library or project custom_gfx.py)
+  gfx:<name>             code-built graphic from the project's custom_gfx.py
+  anim:<path> [@m:ss.s]  animation/motion-graphics clip rendered with any tool (Manim, Remotion, Blender…);
+                         counts as GRAPHICS in the real/graphics ratio; credit optional
   <ASSET_ID> @m:ss.s     registered video in project.yaml assets (path, credit, crop, desat, scan)
   vid:<path> @m:ss.s     local video file (credit=... required)
   img:<path>             local image (credit=... required; credit=none for own material)
@@ -89,7 +91,7 @@ def parse_alt(alt):
 
 
 def resolve(shot, allow_alt=True):
-    """Return dict(kind, path, credit, cut_info, used_alt)."""
+    """Return dict(kind, path, credit, cls, used_alt). cls = real | graphic (for the ratio check)."""
     src, opts = shot["src"], shot["opts"]
     try:
         r = _resolve(src, opts)
@@ -104,19 +106,28 @@ def resolve(shot, allow_alt=True):
             raise
     if opts.get("credit"):
         r["credit"] = None if opts["credit"] == "none" else opts["credit"]
+    r.setdefault("cls", "graphic" if r["kind"] == "gfx" else "real")
+    if opts.get("class") in ("real", "graphic"):
+        r["cls"] = opts["class"]
     return r
 
 
 def _resolve(src, opts):
     L = _labels()
     if src.startswith("gfx:"):
-        return {"kind": "gfx", "path": src[4:], "credit": None}
+        return {"kind": "gfx", "path": src[4:], "credit": None, "cls": "graphic"}
+    if src.startswith("anim:"):
+        p = src[5:]
+        if not os.path.exists(p):
+            raise AssetError(f"animation clip missing: {p}")
+        return {"kind": "video", "path": p, "credit": opts.get("credit"), "cls": "graphic", "anim": True}
     reg = registered(src)
     if reg:
         p = reg["path"]
         if not os.path.exists(p):
             raise AssetError(f"registered asset {src}: file missing {p}")
-        return {"kind": "video", "path": p, "credit": reg.get("credit"), "asset": src}
+        return {"kind": "video", "path": p, "credit": reg.get("credit"), "asset": src,
+                "cls": reg.get("class", "real")}
     if src.startswith("vid:"):
         p = src[4:]
         if not os.path.exists(p):
