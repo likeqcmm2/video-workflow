@@ -11,7 +11,7 @@ VIS: TAPE @5:19.0 | stamp=1986年1月28日　午前11時38分（米東部時間�
 
 #### S012 | pause=3.0
 NAR: 今回は、チャレンジャー号爆発事故の真相を解き明かしていきます。
-VIS: gfx:title | text=チャレンジャー号爆発事故 | sub=打ち上げ73秒後の空中分解      ← g_title in this film's custom_gfx.py
+VIS: anim:assets/anim/title.mp4 @0:00.0      ← title designed and rendered with Remotion + SVG
 
 ## BODY
 ### CH1 | 第1章 | 夢の宇宙船
@@ -36,8 +36,8 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 | `img:assets/x.jpg` | any local image (needs `credit=`, or `credit=none` for own material) |
 | `nasa:S86-38989` | NASA image fetched with `vf nasa fetch` |
 | `cm:File title.jpg` | Wikimedia Commons file fetched with `vf commons fetch` (credit from licence metadata) |
-| `gfx:<name>` | this film's graphic: function `g_<name>` in `custom_gfx.py` (docs/08) |
-| `anim:assets/anim/x.mp4` | animation clip rendered with an external tool (Manim, Remotion, Blender, Three.js, After Effects…) — counts as graphics, not graded like footage (docs/08) |
+| `gfx:<name>` | Python fallback graphic, only for a documented Remotion capability gap; or a thin adapter loading Remotion-rendered assets (docs/08) |
+| `anim:assets/anim/x.mp4` | preferred: graphic/animation rendered with Remotion + SVG; other tools only for documented Remotion capability gaps — counts as graphics, not graded like footage (docs/08) |
 
 ## Shot options (`| key=value`)
 | Option | Applies to | Effect |

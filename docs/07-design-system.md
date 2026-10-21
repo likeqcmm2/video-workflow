@@ -1,6 +1,7 @@
 # Phase 7 — Design system (designed for THIS film — the engine assumes no style)
 
-Nothing visual has a default. Design the look from the director notes: genre and sub-genre, era, place,
+Visual style has no default. Graphics and animation authoring uses Remotion + SVG first; Python drawing
+is permitted only for a documented requirement Remotion cannot meet (docs/08). Design the look from the director notes: genre and sub-genre, era, place,
 the material you actually found, the emotion. A 1940s newsreel story, a 1986 TV-archive disaster and a
 2020s tech story need different colour, texture, typography and motion, even inside one genre. Write the
 design into script.md ("Design system" section) and into `project.yaml design`. Preflight errors on any
@@ -15,10 +16,10 @@ missing decision.
 | Subtitles | `design.subtitle {font, colour}` (+ size, outline, outline_colour, shadow, shadow_opacity, margin_v) | font = family name as fontconfig sees it (`fc-scan --format "%{fullname}\n" vendor/fonts/X.ttf`) |
 | Credit, date/place stamp | `design.credit` / `design.stamp {font, colour, opacity, position}` (+ size, outline) | position = a corner; bottom corners sit just above the subtitle block; credit and stamp need different corners |
 | Lower third (name／role) | `design.lower_third {name_font, name_colour, role_font, role_colour, position, plate}` (+ sizes, role_opacity, plate_colour, plate_opacity) | position left/right, in the band above the subtitles; a bottom credit/stamp on the same side collides |
-| Chapter cards | `design.chapter_card {enabled, duration, gfx}` | the card is YOUR graphic (`gfx: chapter` → `g_chapter` in custom_gfx.py); duration required when enabled |
+| Chapter cards | `design.chapter_card {enabled, duration, gfx}` | author in Remotion; current engine needs a thin `g_chapter` adapter to load rendered frames (docs/08); duration required when enabled |
 | Transitions | `design.transitions {film_in, film_out, after_card}` (all required), shot `in=` / `out=` | `cut`, `fade:<s>`, `dissolve:<s>` |
 | Motion | `design.motion {still_zoom, video_push}` (both required), shot `kb=`, `zoom=`, `push=` | 0 = static; per shot overrides |
-| Title card, overlays, all graphics and animation | custom_gfx.py / animation clips | docs/08 |
+| Title card, overlays, all graphics and animation | Remotion + SVG → animation clips; Python only for documented capability gaps | docs/08 |
 
 ## Grade parameters (`design.grades.<name>`)
 | Key | Neutral | Effect |

@@ -32,6 +32,18 @@ secret is missing).
 - **Never weaken a QA check to get a green result.** Fix the content. If the engine is wrong, fix the engine,
   then run `bash tests/run_tests.sh`.
 
+## Graphics and animation tool priority
+- **Use Remotion + SVG first for all newly authored graphics and animation**, including maps, charts,
+  timelines, diagrams, documents, title/chapter cards, lower thirds and overlays. Design for this film.
+- Use Python drawing (`custom_gfx.py`, Pillow/OpenCV or Manim) **only when Remotion cannot meet a concrete
+  requirement**. Record the requirement, what was tried and why Remotion cannot satisfy it in PROGRESS.md.
+  Simplicity, familiarity, existing Python helpers, or Remotion not being installed are not fallback reasons;
+  install the required Node/Remotion dependencies first. Other specialist tools also require a documented
+  Remotion capability gap (for example, an essential 3D simulation).
+- Render Remotion scenes to clips in `assets/anim/`, keep their source beside them, and use `anim:<file>` or
+  `overlay=anim:<file>` (docs/08). Python engine orchestration, QA and thin adapters that load Remotion-rendered
+  assets remain supported; this priority governs visual authoring, not the engine implementation language.
+
 ## Secrets (environment variables only)
 `GEMINI_API_KEY` (TTS + ASR), `WIKIMEDIA_USER_AGENT`, `WIKIMEDIA_BOT_USER`, `WIKIMEDIA_BOT_PASSWORD`.
 Check with `scripts/vf doctor` (prints set / not set, never values). Never echo, log, commit or write them

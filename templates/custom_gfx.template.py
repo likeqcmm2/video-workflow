@@ -1,5 +1,9 @@
 """This film's graphics. Every function g_<name>(p, t, dur) becomes  VIS: gfx:<name> | key=value ...
-Design them for THIS film (genre, era, material) - the engine ships no graphic styles (docs/07, docs/08).
+FALLBACK ONLY: author new graphics/animation in Remotion + SVG first (docs/08).
+Use Python drawing only for a concrete requirement Remotion cannot meet; record the requirement,
+attempted Remotion approach and capability gap in PROGRESS.md. Existing helpers, simple scenes and missing
+Remotion dependencies are not reasons to fall back. Thin adapters loading Remotion-rendered assets are OK.
+Design any approved fallback for THIS film (genre, era, material).
 
   p      parameters from the VIS line / graphics.yaml spec: p.s("title"), p.i("n"), p.f("x"), p.l("items"), p.rows("rows")
   t,dur  seconds into the shot / shot length - animate with ramp(t, start, length), ease(), mix()
