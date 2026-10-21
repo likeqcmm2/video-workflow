@@ -12,12 +12,14 @@ design:                      # every value is a decision of this (test) film - n
     archive: {desat: 1.0, contrast: 1.12, vignette: 0.35, grain: 9, gfx_grain: 3, bottom: 0.6}
   palette: {bg: "#101418", text: "#ece6da", muted: "#8f8a80", accent: "#d0643c", secondary: "#8fb3c9", paper: "#e9e4d8", ink: "#22201c", line: "#beb8ac"}
   fonts: {display: NotoSerifJP-500.ttf, display_bold: NotoSerifJP-700.ttf, text: NotoSansJP-400.ttf, text_medium: NotoSansJP-500.ttf, mono: NotoSansMono-400.ttf}
-  subtitle: {font: "Noto Sans JP Medium"}
-  credit: {font: "Noto Sans JP"}
-  stamp: {font: "Noto Sans JP Medium"}
-  lower_third: {name_font: "Noto Serif JP Medium", role_font: "Noto Sans JP"}
+  subtitle: {font: "Noto Sans JP Medium", colour: "#fff8e8", outline_colour: "#202020"}
+  credit: {font: "Noto Sans JP", colour: "#e0e0e0", opacity: 0.8, position: bottom-right}
+  stamp: {font: "Noto Sans JP Medium", colour: "#f0e6d0", position: top-left}
+  lower_third: {name_font: "Noto Serif JP Medium", name_colour: "#ece6da", role_font: "Noto Sans JP",
+                role_colour: "#c0c8cc", position: left, plate: true, plate_colour: "#101418", plate_opacity: 0.6}
   chapter_card: {enabled: true, duration: 3.0, gfx: chapter}
-  motion: {still_zoom: 0.08}
+  transitions: {film_in: "fade:0.5", film_out: "fade:1.0", after_card: "dissolve:0.5"}
+  motion: {still_zoom: 0.08, video_push: 0.03}
 assets:
   CLIP: {path: assets/video/clip.mp4, credit: "映像：テスト素材", license: "synthetic", link: "-"}
 music:

@@ -67,9 +67,18 @@ Technical requirements (each one cost time somewhere):
 - `design.grades.<name>` applied per chapter (`grade=` in the chapter header) or shot (`grade=`).
 - Stills: `kb=` direction, `zoom=` amount (default `design.motion.still_zoom`); video: `push=`.
 
-## Editing rules (from the original brief, still binding)
-- Footage moves by itself — only a very gentle push. Stills never sit dead: slow zoom/pan; fast genres change
-  picture every 2–4 s, slow genres may hold 5–8 s.
-- Text never covers faces, logos or captions inside the footage (`focus=`, `fit=contain`, or move the stamp).
+## Editing rules — technical, always binding
+- Pictures and on-screen text appear when the narration names them, never more than 0.5 s early or late
+  (one VIS line per sentence does this automatically).
+- Text never covers faces, logos or captions inside the footage (`focus=`, `fit=contain`, another corner for
+  the stamp/credit, or `subs=off` with the words in the graphic).
 - Every asset carries its credit for its whole duration (automatic; preflight errors if missing).
-- Pictures and on-screen text appear when the narration names them, never more than 0.5 s early or late.
+- No video plays slower than 0.6× and no shot runs across a cut or into a fade (preflight).
+- A still that is shown full-frame must be sharp at 1080p, otherwise `fit=contain` or a better file (preflight).
+
+## Rhythm and motion — your decision, not a rule
+How long a picture holds, whether stills move, how strongly footage pushes, cut or dissolve: decide per film
+and per passage (director notes, design system). Observations from past productions, to reason from: a
+static still longer than ~8 s with no reason tends to read as a mistake (preflight warns, accept it if
+intended); fast genres often change picture every 2–4 s, contemplative ones may hold far longer; archive
+footage usually needs little or no added motion.

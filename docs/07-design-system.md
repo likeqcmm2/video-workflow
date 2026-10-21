@@ -10,13 +10,15 @@ missing decision.
 | Decision | project.yaml | Notes |
 |---|---|---|
 | Colour grade(s) | `design.grades.main` (+ any named grades) | parameters below; several grades for several eras/sources; pick per chapter (`### CH2 \| … \| grade=archive`) or per shot (`grade=…`) |
-| Palette | `design.palette` | any keys your graphics use (`C.<key>` in custom_gfx.py); `text` is required (lower-third name) |
+| Palette | `design.palette` | any keys your graphics use (`C.<key>` in custom_gfx.py) |
 | Fonts | `design.fonts` (role → file) | roles are your names (`display`, `text`, `mono`…); download any Google Fonts family: `python3 scripts/fetch_fonts.py "Family Name:400,700"` |
-| Subtitle, credit, stamp, lower-third fonts | `design.subtitle.font`, `credit.font`, `stamp.font`, `lower_third.name_font/role_font` | family names as fontconfig sees them (`fc-scan --format "%{fullname}\n" vendor/fonts/X.ttf`) |
-| Chapter cards | `design.chapter_card {enabled, duration, gfx}` | the card is YOUR graphic (`gfx: chapter` → `g_chapter` in custom_gfx.py) |
-| Transitions | `design.transitions {film_in, film_out, after_card}`, shot `in=` / `out=` | `cut`, `fade:<s>`, `dissolve:<s>` |
-| Motion | `design.motion {still_zoom, video_push}`, shot `kb=`, `zoom=`, `push=` | 0 = static |
-| Title card, lower-third look, overlays, all graphics | custom_gfx.py / animation clips | docs/08 |
+| Subtitles | `design.subtitle {font, colour}` (+ size, outline, outline_colour, shadow, shadow_opacity, margin_v) | font = family name as fontconfig sees it (`fc-scan --format "%{fullname}\n" vendor/fonts/X.ttf`) |
+| Credit, date/place stamp | `design.credit` / `design.stamp {font, colour, opacity, position}` (+ size, outline) | position = a corner; bottom corners sit just above the subtitle block; credit and stamp need different corners |
+| Lower third (name／role) | `design.lower_third {name_font, name_colour, role_font, role_colour, position, plate}` (+ sizes, role_opacity, plate_colour, plate_opacity) | position left/right, in the band above the subtitles; a bottom credit/stamp on the same side collides |
+| Chapter cards | `design.chapter_card {enabled, duration, gfx}` | the card is YOUR graphic (`gfx: chapter` → `g_chapter` in custom_gfx.py); duration required when enabled |
+| Transitions | `design.transitions {film_in, film_out, after_card}` (all required), shot `in=` / `out=` | `cut`, `fade:<s>`, `dissolve:<s>` |
+| Motion | `design.motion {still_zoom, video_push}` (both required), shot `kb=`, `zoom=`, `push=` | 0 = static; per shot overrides |
+| Title card, overlays, all graphics and animation | custom_gfx.py / animation clips | docs/08 |
 
 ## Grade parameters (`design.grades.<name>`)
 | Key | Neutral | Effect |

@@ -36,4 +36,4 @@ VIS: CLIP @10.0 | overlay=anim:assets/anim/line_alpha.webm | out=fade:0.8
 NAR: 報告書は、九つの改善を勧告しました。
 VIS: img:assets/img/small.jpg | credit=写真：テスト | fit=contain | grade=main | in=fade:0.4
 
-Length check: hook 64 chars (sample 60), body 146, total 210 — PASS (2026-10-21 07:34)
+Length check: hook 64 chars (sample 60), body 146, total 210 — PASS (2026-10-21 08:00)

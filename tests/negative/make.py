@@ -21,8 +21,8 @@ def g_overflow(p, t, dur):
     return im
 ''')
 y = (HERE / "project.yaml").read_text()
-for a, b in [("  motion: {still_zoom: 0.08}\n", ""),                                  # design decision missing
-             ('stamp: {font: "Noto Sans JP Medium"}', 'stamp: {font: "Noto Sans XX"}'),    # font not installed
+for a, b in [("  motion: {still_zoom: 0.08, video_push: 0.03}\n", ""),                                  # design decision missing
+             ('stamp: {font: "Noto Sans JP Medium",', 'stamp: {font: "Noto Sans XX",'),    # font not installed
              ("real_pct: {min: 20, max: 70}", "real_pct: {min: 85, max: 95}")]:            # film outside its range
     assert a in y, a
     y = y.replace(a, b)

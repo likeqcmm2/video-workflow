@@ -19,7 +19,7 @@ from pathlib import Path
 from . import config
 from .assets import AssetError, resolve
 from .scriptfmt import parse, parse_vis
-from .subtitles import ass_header, ass_time, esc, events
+from .subtitles import _ass_color, ass_header, ass_time, esc, events
 from .textproc import sentences
 
 OUT = Path("out")
@@ -204,9 +204,13 @@ def write_ass(data=None):
                     wbox = int(max(st["name_size"] * len(nm), st["role_size"] * len(role)) *
                                (1.0 if config.is_cjk() else 0.55) + 120)
                     py = int(H * 0.733)
-                    plate = (f"{{\\an7\\pos(60,{py})\\p1\\bord0\\shad0\\1c&H000000&\\1a&H50&\\blur28\\fad(400,300)}}"
-                             f"m 0 0 l {wbox} 0 {wbox} 150 0 150{{\\p0}}")
-                    lines.append(f"Dialogue: 0,{ass_time(a + 0.4)},{ass_time(b - 0.1)},LTRole,,0,0,0,,{plate}")
+                    if st["plate"]:
+                        px = 60 if st["position"] == "left" else data["size"][0] - 60 - wbox
+                        pc = _ass_color(st["plate_colour"])[4:]
+                        pa = _ass_color(st["plate_colour"], st["plate_opacity"])[2:4]
+                        plate = (f"{{\\an7\\pos({px},{py})\\p1\\bord0\\shad0\\1c&H{pc}&\\1a&H{pa}&\\blur28\\fad(400,300)}}"
+                                 f"m 0 0 l {wbox} 0 {wbox} 150 0 150{{\\p0}}")
+                        lines.append(f"Dialogue: 0,{ass_time(a + 0.4)},{ass_time(b - 0.1)},LTRole,,0,0,0,,{plate}")
                     lines.append(f"Dialogue: 1,{ass_time(a + 0.4)},{ass_time(b - 0.1)},LTName,,0,0,0,,{{\\fad(400,300)}}{esc(nm)}")
                     if role:
                         lines.append(f"Dialogue: 1,{ass_time(a + 0.6)},{ass_time(b - 0.1)},LTRole,,0,0,0,,{{\\fad(400,300)}}{esc(role)}")

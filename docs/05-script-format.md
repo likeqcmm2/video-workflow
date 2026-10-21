@@ -45,8 +45,8 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 | `kb=in/out/l/r/u/d/none` | stills | Ken Burns: zoom in/out, pan left/right/up/down (default `in`) |
 | `fit=cover/contain` | stills | fill the frame / whole picture on its own blurred copy (default by aspect) |
 | `focus=0.5,0.3` | stills (cover) | crop centre (x,y 0–1) — keep faces in frame |
-| `stamp=…` | any | small date/place line, top-left |
-| `lt=Name／Role` | any | lower third (name + role) |
+| `stamp=…` | any | small date/place line (corner from `design.stamp.position`) |
+| `lt=Name／Role` | any | lower third (name + role; look from `design.lower_third`) |
 | `credit=…` / `credit=none` | any | override the automatic on-screen credit |
 | `dim=0.2` | any | darken (for quiet moments) |
 | `grade=<name>` | any | use another grade from `design.grades` for this shot (default: chapter's, else `main`) |

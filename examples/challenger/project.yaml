@@ -19,10 +19,11 @@ design:
             secondary: "#9fb7c9", paper: "#e9e4d8", ink: "#22201c", line: "#beb8ac", card_bg: "#080a0d"}
   fonts: {serif: NotoSerifJP-500.ttf, serif_bold: NotoSerifJP-700.ttf, sans: NotoSansJP-400.ttf,
           sans_medium: NotoSansJP-500.ttf, sans_bold: NotoSansJP-700.ttf}
-  subtitle: {font: "Noto Sans JP Medium"}
-  credit: {font: "Noto Sans JP"}
-  stamp: {font: "Noto Sans JP Medium"}
-  lower_third: {name_font: "Noto Serif JP Medium", role_font: "Noto Sans JP"}
+  subtitle: {font: "Noto Sans JP Medium", colour: "#f2f2f2"}
+  credit: {font: "Noto Sans JP", colour: "#d8d8d8", opacity: 0.75, position: top-right}
+  stamp: {font: "Noto Sans JP Medium", colour: "#d8e2e6", opacity: 0.937, position: top-left}
+  lower_third: {name_font: "Noto Serif JP Medium", name_colour: "#e8e2d6", role_font: "Noto Sans JP",
+                role_colour: "#b8c2c8", role_opacity: 0.875, position: left, plate: true, plate_opacity: 0.686}
   chapter_card: {enabled: true, duration: 3.6, gfx: chapter}
   transitions: {film_in: "fade:0.6", film_out: "fade:1.5", after_card: "fade:0.5"}
   motion: {still_zoom: 0.10, video_push: 0.025}

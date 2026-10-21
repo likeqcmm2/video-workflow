@@ -39,17 +39,23 @@ DEFAULTS = {
     # design: NO style defaults. Every film decides its own look (docs/07). Only technical values have defaults.
     "design": {
         "grades": {},           # REQUIRED: {main: {desat, contrast, warm, vignette, grain, gfx_grain, bottom}, <other>: {...}}
-        "palette": {},          # REQUIRED: colours your graphics use; "text" is also used for the lower-third name
+        "palette": {},          # REQUIRED: colours your graphics use (any keys -> C.<key> in custom_gfx.py)
         "fonts": {},            # REQUIRED: role -> font file in vendor/fonts (roles are yours: e.g. display, text, mono)
-        "subtitle": {"font": None, "size": 50, "max_chars": 24, "slack": 4,      # font: REQUIRED family name
-                     "margin_v": 62, "outline": 2.6, "shadow": 1.2, "spacing": 1,
-                     "colour": "#f2f2f2"},
-        "credit": {"font": None, "size": 22},                                     # font: REQUIRED family name
-        "stamp": {"font": None, "size": 28},                                      # font: REQUIRED family name
-        "lower_third": {"name_font": None, "name_size": 44, "role_font": None, "role_size": 28, "plate": True},
-        "chapter_card": {"enabled": None, "duration": 3.6, "gfx": "chapter"},     # enabled: REQUIRED decision
-        "transitions": {"film_in": "fade:0.6", "film_out": "fade:1.5", "after_card": "fade:0.5"},
-        "motion": {"still_zoom": None, "video_push": 0.025},                     # still_zoom: REQUIRED (0 = static)
+        # On-screen text layers burned in by libass. None = REQUIRED decision of the film (docs/07).
+        # Sizes/outlines have legible 1080p starting values; change them freely.
+        # Colours "#rrggbb"; opacity 0..1. Positions: top-left | top-right | bottom-left | bottom-right
+        # (bottom positions sit just above the subtitle block); lower_third.position: left | right.
+        "subtitle": {"font": None, "colour": None, "outline_colour": "#101010", "size": 50, "max_chars": 24,
+                     "slack": 4, "margin_v": 62, "outline": 2.6, "shadow": 1.2, "shadow_opacity": 0.41, "spacing": 1},
+        "credit": {"font": None, "colour": None, "opacity": 1.0, "position": None, "size": 22, "outline": 1.2},
+        "stamp": {"font": None, "colour": None, "opacity": 1.0, "position": None, "size": 28, "outline": 1.6,
+                  "spacing": 1},
+        "lower_third": {"name_font": None, "name_colour": None, "name_size": 44, "role_font": None,
+                        "role_colour": None, "role_opacity": 1.0, "role_size": 28, "position": None,
+                        "plate": None, "plate_colour": "#000000", "plate_opacity": 0.7},
+        "chapter_card": {"enabled": None, "duration": None, "gfx": "chapter"},    # enabled REQUIRED; duration if enabled
+        "transitions": {"film_in": None, "film_out": None, "after_card": None},  # REQUIRED: cut | fade:<s> | dissolve:<s>
+        "motion": {"still_zoom": None, "video_push": None},                      # REQUIRED (0 = static)
         "safe_margin": 0.05,                 # technical: fraction of width/height kept clear of text
         "subtitle_zone_top": None,           # gfx text must stay above this y; None = derived from subtitle style
     },
@@ -157,19 +163,42 @@ def design_missing():
         unknown = set(g) - set(GRADE_KEYS)
         if unknown:
             miss.append(f"design.grades.{name}: unknown keys {sorted(unknown)} (allowed: {sorted(GRADE_KEYS)})")
-    if not d.get("palette", {}).get("text"):
-        miss.append("design.palette (at least 'text')")
+    if not d.get("palette"):
+        miss.append("design.palette (the colours of this film's graphics)")
     if not d.get("fonts"):
         miss.append("design.fonts (role -> font file)")
-    for k, v in (("subtitle.font", d["subtitle"]["font"]), ("credit.font", d["credit"]["font"]),
-                 ("stamp.font", d["stamp"]["font"]), ("lower_third.name_font", d["lower_third"]["name_font"]),
-                 ("lower_third.role_font", d["lower_third"]["role_font"])):
-        if not v:
-            miss.append(f"design.{k} (font family name)")
-    if d["chapter_card"]["enabled"] is None:
-        miss.append("design.chapter_card.enabled (true/false)")
-    if d["motion"]["still_zoom"] is None:
-        miss.append("design.motion.still_zoom (Ken Burns amount, 0 = static)")
+    corners = ("top-left", "top-right", "bottom-left", "bottom-right")
+    req = [("subtitle.font", d["subtitle"]["font"], None), ("subtitle.colour", d["subtitle"]["colour"], None),
+           ("credit.font", d["credit"]["font"], None), ("credit.colour", d["credit"]["colour"], None),
+           ("credit.position", d["credit"]["position"], corners),
+           ("stamp.font", d["stamp"]["font"], None), ("stamp.colour", d["stamp"]["colour"], None),
+           ("stamp.position", d["stamp"]["position"], corners),
+           ("lower_third.name_font", d["lower_third"]["name_font"], None),
+           ("lower_third.name_colour", d["lower_third"]["name_colour"], None),
+           ("lower_third.role_font", d["lower_third"]["role_font"], None),
+           ("lower_third.role_colour", d["lower_third"]["role_colour"], None),
+           ("lower_third.position", d["lower_third"]["position"], ("left", "right")),
+           ("lower_third.plate", d["lower_third"]["plate"], (True, False)),
+           ("chapter_card.enabled", d["chapter_card"]["enabled"], (True, False)),
+           ("motion.still_zoom", d["motion"]["still_zoom"], None),
+           ("motion.video_push", d["motion"]["video_push"], None)]
+    req += [(f"transitions.{k}", d["transitions"].get(k), None) for k in ("film_in", "film_out", "after_card")]
+    if d["chapter_card"]["enabled"]:
+        req.append(("chapter_card.duration", d["chapter_card"]["duration"], None))
+    for k, v, allowed in req:
+        if v is None or v == "":
+            miss.append(f"design.{k}" + (f" (one of {list(allowed)})" if allowed else ""))
+        elif allowed and v not in allowed:
+            miss.append(f"design.{k}: {v!r} is not one of {list(allowed)}")
+    for k, v in d["transitions"].items():
+        if v and v != "cut" and str(v).partition(":")[0] not in ("fade", "dissolve"):
+            miss.append(f"design.transitions.{k}: {v!r} (cut | fade:<s> | dissolve:<s>)")
+    if d["credit"]["position"] and d["credit"]["position"] == d["stamp"]["position"]:
+        miss.append("design.credit.position and design.stamp.position are the same corner (they would overlap)")
+    lt = d["lower_third"]["position"]
+    for k in ("credit", "stamp"):
+        if lt and d[k]["position"] == f"bottom-{lt}":
+            miss.append(f"design.{k}.position bottom-{lt} collides with the lower third ({lt})")
     r = load()["director"]["real_pct"]
     if r.get("min") is None or r.get("max") is None:
         miss.append("director.real_pct {min, max} (Phase 2)")

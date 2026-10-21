@@ -141,21 +141,31 @@ def events(sentence, lang=None):
     return out
 
 
-def _ass_color(hexrgb, alpha=0):
-    h = hexrgb.lstrip("#")
+def _ass_color(hexrgb, opacity=1.0):
+    h = str(hexrgb).lstrip("#")
     r, g, b = h[0:2], h[2:4], h[4:6]
+    alpha = max(0, min(255, round((1 - float(opacity)) * 255)))
     return f"&H{alpha:02X}{b}{g}{r}".upper()
+
+
+_ALIGN = {"top-left": 7, "top-right": 9, "bottom-left": 1, "bottom-right": 3, "left": 1, "right": 3}
+
+
+def corner_margin_v(position):
+    """Vertical margin for a corner layer: the safe margin at the top, just above the subtitle block at the bottom."""
+    W, H, _ = config.size()
+    my = int(H * config.load()["design"]["safe_margin"])
+    return my if position.startswith("top") else int(H - config.subtitle_zone_top() + 12)
 
 
 def ass_header():
     cfg = config.load()
     W, H, _ = config.size()
     d = cfg["design"]
-    pal = d["palette"]
     s, cr, stp, lt = d["subtitle"], d["credit"], d["stamp"], d["lower_third"]
     mx = int(W * d["safe_margin"])
-    my = int(H * d["safe_margin"])
-    txt = _ass_color(pal["text"])
+    oc = lambda c: _ass_color(c)      # noqa: E731
+    sub_out = oc(s.get("outline_colour") or "#101010")
     return f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -165,11 +175,11 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,{s['font']},{s['size']},{_ass_color('#f2f2f2')},&H000000FF,&H00101010,&H96000000,0,0,0,0,100,100,{s['spacing']},0,1,{s['outline']},{s['shadow']},2,{mx + 64},{mx + 64},{s['margin_v']},1
-Style: Credit,{cr['font']},{cr['size']},&H40D8D8D8,&H000000FF,&H00101010,&H00000000,0,0,0,0,100,100,0,0,1,1.2,0,9,{mx},{mx},{my},1
-Style: Stamp,{stp['font']},{stp['size']},&H10E6E2D8,&H000000FF,&H00101010,&H00000000,0,0,0,0,100,100,1,0,1,1.6,0,7,{mx},{mx},{my},1
-Style: LTName,{lt['name_font']},{lt['name_size']},{txt},&H000000FF,&H00101010,&H00000000,0,0,0,0,100,100,1,0,1,2,0,1,{mx + 14},{mx},{int(H * 0.215)},1
-Style: LTRole,{lt['role_font']},{lt['role_size']},&H20C8C2B8,&H000000FF,&H00101010,&H00000000,0,0,0,0,100,100,0,0,1,1.6,0,1,{mx + 16},{mx},{int(H * 0.178)},1
+Style: Sub,{s['font']},{s['size']},{_ass_color(s['colour'])},&H000000FF,{sub_out},{_ass_color('#000000', s['shadow_opacity'])},0,0,0,0,100,100,{s['spacing']},0,1,{s['outline']},{s['shadow']},2,{mx + 64},{mx + 64},{s['margin_v']},1
+Style: Credit,{cr['font']},{cr['size']},{_ass_color(cr['colour'], cr['opacity'])},&H000000FF,{sub_out},&H00000000,0,0,0,0,100,100,0,0,1,{cr['outline']},0,{_ALIGN[cr['position']]},{mx},{mx},{corner_margin_v(cr['position'])},1
+Style: Stamp,{stp['font']},{stp['size']},{_ass_color(stp['colour'], stp['opacity'])},&H000000FF,{sub_out},&H00000000,0,0,0,0,100,100,{stp['spacing']},0,1,{stp['outline']},0,{_ALIGN[stp['position']]},{mx},{mx},{corner_margin_v(stp['position'])},1
+Style: LTName,{lt['name_font']},{lt['name_size']},{_ass_color(lt['name_colour'])},&H000000FF,{sub_out},&H00000000,0,0,0,0,100,100,1,0,1,2,0,{_ALIGN[lt['position']]},{mx + 14},{mx + 14},{int(H * 0.215)},1
+Style: LTRole,{lt['role_font']},{lt['role_size']},{_ass_color(lt['role_colour'], lt['role_opacity'])},&H000000FF,{sub_out},&H00000000,0,0,0,0,100,100,0,0,1,1.6,0,{_ALIGN[lt['position']]},{mx + 16},{mx + 16},{int(H * 0.178)},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

@@ -27,15 +27,19 @@ design:                       # Phase 7 (docs/07) - EVERYTHING here is this film
   grades:
     main: {}                  # REQUIRED: desat, contrast, warm [r,g,b], vignette, grain, gfx_grain, bottom (docs/07 table)
                               # add more named grades (e.g. per era) and pick them per chapter/shot with grade=<name>
-  palette: {}                 # REQUIRED: the colours your graphics use, any keys (C.<key> in custom_gfx.py); "text" required
+  palette: {}                 # REQUIRED: the colours your graphics use, any keys (C.<key> in custom_gfx.py)
   fonts: {}                   # REQUIRED: role -> font file in vendor/fonts (fetch: scripts/fetch_fonts.py "Family:400,700")
-  subtitle: {font: null}      # REQUIRED family names (fc-scan --format "%{fullname}\n" vendor/fonts/X.ttf)
-  credit: {font: null}
-  stamp: {font: null}
-  lower_third: {name_font: null, role_font: null}
-  chapter_card: {enabled: null, duration: 3.6, gfx: chapter}   # enabled REQUIRED; gfx = your g_<name> in custom_gfx.py
-  transitions: {film_in: "fade:0.6", film_out: "fade:1.5", after_card: "fade:0.5"}   # cut | fade:<s> | dissolve:<s>
-  motion: {still_zoom: null, video_push: 0.025}                # still_zoom REQUIRED (0 = static stills)
+  # Burned-in text layers. Fonts = family names (fc-scan --format "%{fullname}\n" vendor/fonts/X.ttf).
+  # Colours "#rrggbb", opacity 0..1. Corners: top-left | top-right | bottom-left | bottom-right.
+  # Optional (legible starting values exist): size, outline, outline_colour, shadow, shadow_opacity, margin_v, spacing.
+  subtitle: {font: null, colour: null}
+  credit: {font: null, colour: null, opacity: 1.0, position: null}
+  stamp: {font: null, colour: null, opacity: 1.0, position: null}
+  lower_third: {name_font: null, name_colour: null, role_font: null, role_colour: null,
+                position: null, plate: null}                    # position left | right; plate true | false (+ plate_colour, plate_opacity)
+  chapter_card: {enabled: null, duration: null, gfx: chapter}   # enabled REQUIRED (duration too if true); gfx = your g_<name>
+  transitions: {film_in: null, film_out: null, after_card: null}  # REQUIRED each: cut | fade:<s> | dissolve:<s>
+  motion: {still_zoom: null, video_push: null}                  # REQUIRED (0 = static)
 
 assets: {}                    # registered videos:  TAPE: {path: assets/ia/x.mp4, credit: "...", link: "...",
                               #   license: "...", rights_check: false, crop: [w,h,x,y], desat: 0.3}
