@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Engine entry point. Run from inside a project directory (the one with project.yaml),
+# or pass --project <dir> as the first argument.
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+PYTHONPATH="$ROOT/engine${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m vf "$@"

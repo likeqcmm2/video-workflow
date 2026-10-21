@@ -1,0 +1,15 @@
+title: "スモークテスト"
+language: ja
+length: {unit: chars, min: 150, sample_hook: 60, hook_tolerance: 0.5}
+voice:
+  readings: {"NASA": "ナサ"}
+director: {genre: test, target_real_pct: 40}
+design: {look: documentary_dark}
+assets:
+  CLIP: {path: assets/video/clip.mp4, credit: "映像：テスト素材", license: "synthetic", link: "-"}
+music:
+  chapters:
+    HOOK: {file: assets/music/tone.mp3}
+    CH2: {file: assets/music/tone.mp3, offset: 10, cut_from_scene: S202}
+  default: assets/music/tone.mp3
+  credit: "synthetic tone"

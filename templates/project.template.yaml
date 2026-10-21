@@ -1,0 +1,36 @@
+# project.yaml - every engine setting for ONE video. Paths are relative to this directory.
+# Full reference with defaults: engine/vf/config.py (DEFAULTS).  Docs: docs/05..09.
+title: "{{TITLE}}"
+language: {{LANG}}            # narration + on-screen text: ja | zh | ko | en | vi | ... (fonts/labels follow)
+
+length:
+  unit: chars                 # chars (CJK, whitespace removed) | words (space-separated languages)
+  min: 10000                  # hard minimum for the TTS narration
+  sample_hook: null           # Phase 1: measure with `vf count-sample sample.txt "<last words of hook>"`
+  hook_tolerance: 0.15
+
+copyright_level: balanced     # safe | balanced | max   (see docs/04-footage.md)
+graphic_content: none         # none | limited          (never child victims)
+
+voice:
+  tts_model: gemini-3.8-flash-tts
+  voice: Arlo
+  asr_models: [gemini-3.8-flash, gemini-3.5-flash]
+  readings: {}                # e.g. {"NASA": "ナサ", "Oリング": "オーリング"} - fixed pronunciations
+
+director:
+  genre: ""                   # Phase 2
+  target_real_pct: 70         # planned share of real footage/photos (QA warns if far off)
+
+design:
+  look: documentary_dark      # documentary_dark | history_warm | mystery_dark | science_clean | business_clean | vivid
+  palette: {}                 # override colours, e.g. {accent: "#c8553d"}
+  chapter_card: {enabled: true, duration: 3.6}
+
+assets: {}                    # registered videos:  TAPE: {path: assets/ia/x.mp4, credit: "...", link: "...",
+                              #   license: "...", rights_check: false, crop: [w,h,x,y], desat: 0.3}
+
+music:
+  chapters: {}                # HOOK: {file: assets/music/A.mp3}   CH4: {file: ..., offset: 120, cut_from_scene: S429}
+  default: null
+  credit: '"<title>" Kevin MacLeod (incompetech.com), CC BY 4.0'

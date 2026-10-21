@@ -1,0 +1,19 @@
+# secrets never go to git
+.secrets/
+*.key
+.env
+# generated / downloaded
+vendor/
+projects/
+__pycache__/
+*.pyc
+*.mp4
+*.wav
+*.mp3
+*.webm
+*.ogv
+tests/*/assets/
+tests/*/out/
+tests/negative/*
+!tests/negative/make.py
+tests/smoke/sources*.md

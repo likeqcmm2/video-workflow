@@ -1,0 +1,29 @@
+flights:
+  title: 年間打ち上げ回数
+  labels: [1981年, 1982年, 1983年, 1990年]
+  values: [2, 3, 9, 24]
+  unit: 回
+  ghost: "4"
+  tags: [[4, 目標]]
+  source: 出典：テスト
+events:
+  title: 記録（1981〜1986年）
+  start: 1981
+  end: 1986.2
+  ticks: [[1981, 1981年], [1983, 1983年], [1985, 1985年]]
+  dots: [[1981.3, miss], [1981.9, hit], [1984.1, hit], [1985.1, hit]]
+  events: [[1981.9, 1981年11月, 初めて確認, up, 1], [1985.1, 1985年1月, 過去最低の温度, down, 1]]
+  legend: 損傷があった飛行
+  footer: 損傷が見つかっても飛行継続
+pts:
+  title: 温度と損傷
+  x_label: 温度（華氏）
+  y_label: 損傷の数
+  x_range: "25,85"
+  y_range: "0,3"
+  x_ticks: "30,40,50,60,70,80"
+  y_ticks: "0,1,2,3"
+  x_fmt: "{:g}°F"
+  points: [[53, 2, hit], [57, 1, hit], [70, 0, miss], [75, 0, miss], [70, 1, hit]]
+  vline: [[36, 打ち上げ時 華氏36度]]
+  source: 出典：テスト

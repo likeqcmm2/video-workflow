@@ -1,0 +1,59 @@
+# Reference production: 打ち上げ73秒後に空中爆発。前夜から技術者が「飛ばすな」と警告していたチャレンジャー号爆発事故の真相
+title: "打ち上げ73秒後に空中爆発。前夜から技術者が「飛ばすな」と警告していたチャレンジャー号爆発事故の真相"
+language: ja
+length: {unit: chars, min: 10000, sample_hook: 421, hook_tolerance: 0.15}
+copyright_level: balanced
+graphic_content: none
+voice:
+  tts_model: gemini-3.8-flash-tts
+  voice: Arlo
+  readings: {"Oリング": "オーリング", "NASA": "ナサ"}
+director: {genre: "disaster / true story (investigation)", target_real_pct: 60}
+design:
+  look: documentary_dark
+  chapter_card: {enabled: true, duration: 3.6}
+assets:
+  TAPE:
+    path: assets/ia/commission_vtv26.mp4
+    credit: "映像：NASA／大統領事故調査委員会 記録映像"
+    link: https://archive.org/details/51-L_challenger_investigation
+    license: "US Government work (NASA / Presidential Commission) - public domain"
+    rights_check: true
+    note: "digitised by A/V Geeks; burned-in camera numbers/circles are original"
+    crop: [620, 466, 6, 2]
+    desat: 0.45
+  DOC:
+    path: assets/ia/nasa_investigation_doc.ogv
+    credit: "映像：NASA"
+    link: https://archive.org/details/ChallengerAccidentandInvestigation
+    license: public domain (NASA)
+    crop: [390, 298, 8, 0]
+    desat: 0.25
+  MCA:
+    path: assets/ia/mcauliffe_broll_720.mp4
+    credit: "映像：NASA"
+    link: https://archive.org/details/Christa-McAuliffe_B-Roll-Resource-Reel.mp4
+    license: public domain (NASA)
+    crop: [972, 720, 154, 0]
+  REAGAN:
+    path: assets/commons/video/President_Ronald_Reagan_s_Speech_on_Space_Shuttle_Challenger_January_28_1986.webm
+    credit: "映像：ロナルド・レーガン大統領図書館／CC BY 3.0（Wikimedia Commons）"
+    link: https://commons.wikimedia.org/wiki/File:President_Ronald_Reagan%27s_Speech_on_Space_Shuttle_Challenger,_January_28,_1986.webm
+    license: CC BY 3.0 (Reagan Library) - attribution required
+  FOAM:
+    path: assets/derived/columbia_foam_et208.mp4
+    credit: "映像：NASA（Wikimedia Commons／パブリックドメイン）"
+    link: https://commons.wikimedia.org/wiki/File:Space_Shuttle_Columbia_disaster_ET208_camera.gif
+    license: public domain (NASA); GIF slowed 0.4x and looped twice, labelled スロー再生
+music:
+  chapters:
+    HOOK: {file: assets/music/Long_Note_Four.mp3}
+    CH1: {file: assets/music/Echoes_of_Time.mp3}
+    CH2: {file: assets/music/Long_Note_Two.mp3}
+    CH3: {file: assets/music/Dark_Times.mp3}
+    CH4: {file: assets/music/Long_Note_Four.mp3, offset: 120, cut_from_scene: S429}
+    CH5: {file: assets/music/Heartbreaking.mp3}
+    CH6: {file: assets/music/Stages_of_Grief.mp3}
+    CH7: {file: assets/music/Bittersweet.mp3}
+    CH8: {file: assets/music/Lightless_Dawn.mp3}
+  credit: 'Kevin MacLeod (incompetech.com), "Licensed under Creative Commons: By Attribution 4.0 License"'
