@@ -66,8 +66,9 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
 - Thiết kế riêng màu, font, nhịp và chuyển động cho từng video; tỷ lệ tư liệu thật là khoảng cho toàn phim.
 - Đồ hoạ/animation ưu tiên **Remotion + SVG**. Python chỉ khi Remotion không đáp ứng yêu cầu cụ thể,
   ghi lý do vào PROGRESS.md. Tích hợp bằng `anim:` / `overlay=anim:` (docs/08).
-- Ưu tiên sub-agent xem ảnh scouting/review; khi không khả dụng, agent chính xem theo lô nhỏ và lưu kết quả
-  ra file. Dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
+- Cả hai vòng review video và các lượt kiểm lại bắt buộc do agent chính tự xem, không giao sub-agent.
+  Xem theo lô nhỏ, lưu danh sách lỗi ra file. Scouting vẫn ưu tiên sub-agent và tự làm khi không khả dụng.
+  Dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
 - Wikimedia dùng thumbnail chuẩn và video chuyển mã qua client chung; bí mật lấy từ biến môi trường.
 
 ## Kiểm tra engine

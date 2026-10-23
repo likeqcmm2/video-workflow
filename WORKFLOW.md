@@ -106,12 +106,13 @@ $VF render --changed     # prefer background; execution fallback: CLAUDE.md; par
 - Music per chapter (docs/09), voice levelled, ducking, loudness −16 LUFS: `$VF audio`.
 
 ## Phase 10 — Review, at least two rounds (docs/10)
-- Round 1: `$VF sheets <chapters> --every 3` → prefer review sub-agents (≤ 2 chapters each, docs/10).
-  If unavailable or failing, review small batches yourself and save JSON issue lists. Then fix →
+- Round 1: `$VF sheets <chapters> --every 3` → the main agent personally reviews all sheets in small
+  batches and saves JSON issue lists (docs/10); do not delegate review to sub-agents. Then fix →
   `$VF plan && $VF preflight && $VF render --changed`.
 - Round 2: `$VF final && $VF qa` (0 errors) + sheets at 3 s for every chapter changed since round 1 + a
-  6 s skim of the whole film, preferably by a fresh sub-agent. If unavailable, the main agent performs a
-  separate second pass in small batches (docs/10). Repeat until a round finds nothing to fix.
+  6 s skim of the whole film, all reviewed personally by the main agent in a separate second pass, using
+  small batches (docs/10). Follow-up reviews also remain with the main agent. Repeat until a round finds
+  nothing to fix.
 - Style comes first: does it fit this genre, era and story; does anything look generic; is the real/graphics
   share of the whole film inside the range (chapters are free; preflight shows them for information)?
 

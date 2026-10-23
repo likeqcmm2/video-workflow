@@ -2,9 +2,11 @@
 
 Read only the files needed for the current phase. Keep durable state and raw results on disk.
 
-1. **Prefer sub-agents for images.** Review sheets, contact sheets and scouting grids return as compact
-   text/JSON. If sub-agents are unavailable or fail, the main agent reviews small batches and saves findings
-   to files; keep a compact summary in context and complete the review.
+1. **Main-agent video review; delegate scouting when available.** Both video-review rounds and follow-up
+   passes belong to the main agent; do not delegate them. Open review sheets in small batches (for example
+   1–2 at a time), save JSON findings and progress to files, and keep a compact summary in context.
+   Contact sheets/scouting grids may go to sub-agents; if unavailable or failing, inspect small batches
+   yourself and save findings. Complete all required coverage.
 2. **Never print raw data.** Commands print short summaries; full data goes to files (`assets/*/scout/*.json`,
    `out/qa/*.json`). If you need more, `rg`/`head` the file. Never `cat` a large JSON or HTML.
 3. **Avoid repetitive polling.** Prefer background jobs with completion notifications. Without notifications,
