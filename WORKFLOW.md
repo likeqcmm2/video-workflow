@@ -28,7 +28,7 @@ scripts/vf init projects/<slug> --title "<title>" --lang <lang>
 cd projects/<slug>
 ```
 - Put the user's sample script in `research/sample.txt`. Fill `project.yaml` from the user's parameters
-  (language, `length.min`, `copyright_level`, `graphic_content`, voice). Unknown → template defaults.
+  (language, `length.min`, `copyright_level`, voice). Unknown → template defaults.
 - If `WIKIMEDIA_*` are set: `$VF commons test` (login, UA, search, cache, one 330 px thumbnail). Record the
   result in PROGRESS.md. Read `docs/wikimedia.md` before any bulk Commons work.
 - Gate: doctor shows no MISSING tool; `GEMINI_API_KEY` set (else ask the user — nothing else blocks).
@@ -60,7 +60,7 @@ cd projects/<slug>
   (`$VF media contact`). Contact sheets are read by **scouting sub-agents**, who return shot lists
   (time ranges, content, people, burned-in text, quality). You keep only `research/shotlist.md`.
 - Register reusable videos in project.yaml `assets` (path, credit, link, license, rights_check, crop, desat).
-- Rights groups A/B/C and the `copyright_level` rules: docs/04. Sensitive-image rules: docs/04.
+- Rights groups A/B/C and the `copyright_level` rules: docs/04.
 - Gate: every chapter has the pictures the director planned for it (archive, graphics or animation — by
   purpose), the whole film can reach the planned real-footage range, and real gaps are written down for the
   report.
@@ -115,4 +115,4 @@ $VF final && $VF qa && $VF stats && $VF sources
 ```
 - `REPORT.md` from `templates/REPORT.template.md`; reply to the user (their language) with the summary:
   duration, narration length, genre + visual direction, real/graphics ratio, what was learned from the
-  sample, what review fixed, and what they must check (rights, audio, weak sources, approximate matches).
+  sample, what review fixed, and what they must check (rights, audio, approximate matches).

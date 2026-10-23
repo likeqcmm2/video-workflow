@@ -13,6 +13,5 @@
 ## Please check before publishing
 1. Rights:
 2. Audio:
-3. Weak sources:
-4. Approximate picture/word matches:
-5. Differences from the sample's style:
+3. Approximate picture/word matches:
+4. Differences from the sample's style:

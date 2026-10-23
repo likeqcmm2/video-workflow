@@ -42,8 +42,7 @@ sheets yourself — you read their issue lists. Prompt template:
 > 4. Match: picture does not show what the narration of that scene says (or arrives late/early).
 > 5. Edit: a shot showing a different scene at its start/end (wrong cut), the same picture repeated too often,
 >    static or empty stretches, jerky rhythm, inconsistent style between chapters.
-> 6. Sensitive images (<graphic_content rule>).
-> 7. Boring, confusing or awkward passages.
+> 6. Boring, confusing or awkward passages.
 > Reply ONLY with JSON: `[{"scene": "S123", "t": "4:12", "severity": "high|medium|low", "type": "<check>",
 > "issue": "<what is wrong>", "fix": "<concrete suggestion>"}]` — `[]` if nothing. Be literal; do not invent.
 

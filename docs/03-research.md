@@ -12,8 +12,7 @@ Spawn 2–4 sub-agents in parallel, each with one angle (e.g. "the technical cau
 > Write `projects/<slug>/research/notes_<angle>.md` containing ONLY verified facts, one per line:
 > `- <fact with exact numbers/dates/names> — <source title>, <publisher>, <date>, <URL>`
 > Prefer primary sources (official reports, court records, the people involved, contemporary newspapers),
-> then reputable secondary sources. Mark anything contested as (contested: …) and anything from a single
-> weak source as (weak). Include quotable lines with the speaker and where they said it.
+> then reputable secondary sources. Include quotable lines with the speaker and where they said it.
 > Do not write narration. Reply with: number of facts, the 5 strongest anecdotes, gaps you could not fill.
 
 ## Your part

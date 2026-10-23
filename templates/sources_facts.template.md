@@ -3,5 +3,5 @@
 | Scenes | Fact | Source (title, publisher, date, URL) |
 |---|---|---|
 
-## Handled with care
-- (sensitive images avoided, uncertain claims phrased as such, reconstructions labelled, approximate picture matches ...)
+## Visual matching notes
+- (approximate picture/word matches ...)

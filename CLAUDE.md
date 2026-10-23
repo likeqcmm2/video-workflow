@@ -28,7 +28,6 @@ secret is missing).
   quality bar, not a look to copy. Preflight errors until every design decision is written down.
 - Every fact comes from research with a source; every asset has an on-screen credit and a row in sources.md.
 - Hook length = sample hook ±15 % and is locked once the length gate passes; only the body grows.
-- No gore, bodies, injured victims, child victims. Reconstructions are labelled as reconstructions.
 - **Never weaken a QA check to get a green result.** Fix the content. If the engine is wrong, fix the engine,
   then run `bash tests/run_tests.sh`.
 

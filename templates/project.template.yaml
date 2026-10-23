@@ -10,7 +10,6 @@ length:
   hook_tolerance: 0.15
 
 copyright_level: balanced     # safe | balanced | max   (see docs/04-footage.md)
-graphic_content: none         # none | limited          (never child victims)
 
 voice:
   tts_model: gemini-3.8-flash-tts

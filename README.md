@@ -19,7 +19,6 @@ Script mẫu: (file đính kèm)
 Ngôn ngữ: Japanese          (tuỳ chọn, mặc định ja)
 Độ dài lời đọc tối thiểu: 10000 ký tự    (tuỳ chọn)
 Mức tư liệu có bản quyền: CÂN BẰNG       (AN TOÀN / CÂN BẰNG / TỐI ĐA)
-Hình ảnh mạnh: KHÔNG
 ```
 
 AI sẽ clone repo, đọc `CLAUDE.md` → `WORKFLOW.md`, rồi tự làm hết mà không hỏi lại, trừ khi bị chặn hẳn
