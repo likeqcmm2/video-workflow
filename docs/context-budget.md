@@ -2,13 +2,18 @@
 
 Read only the files needed for the current phase. Keep durable state and raw results on disk.
 
-1. **Images go to sub-agents.** Review sheets, contact sheets, scouting grids: a sub-agent reads them and returns
-   text/JSON. The main agent opens at most a handful of images itself (a custom graphic preview, one spot check).
+1. **Prefer sub-agents for images.** Review sheets, contact sheets and scouting grids return as compact
+   text/JSON. If sub-agents are unavailable or fail, the main agent reviews small batches and saves findings
+   to files; keep a compact summary in context and complete the review.
 2. **Never print raw data.** Commands print short summaries; full data goes to files (`assets/*/scout/*.json`,
    `out/qa/*.json`). If you need more, `rg`/`head` the file. Never `cat` a large JSON or HTML.
-3. **No polling.** Long jobs (`tts`, `render`, `final`) run in the background; you are notified when they end.
-4. **Do not re-read** the sample script after Phase 1, or engine source files to learn their API — use
-   `vf --help`, `vf gfx-list`, docs/05 and docs/08.
+3. **Avoid repetitive polling.** Prefer background jobs with completion notifications. Without notifications,
+   check status and short log tails at spaced intervals (start around 30–60 s, then back off). Without
+   background support, use a foreground execution session with bounded waits. Do not skip completion checks.
+4. **Prefer saved summaries and targeted reads.** After Phase 1, use the style profile; for engine APIs use
+   `vf --help`, `vf gfx-list`, docs/05 and docs/08 first. If a summary is incomplete, an error needs debugging
+   or docs disagree with code, re-read only the relevant sample passage, documentation or source function
+   and update the saved notes. Avoid repeatedly loading whole files.
 5. **Edit, don't rewrite.** Change files with small edits; do not re-emit whole scripts/graphics files.
 6. **Batch shell work** into one command with a compact final print; avoid many tiny tool calls.
 7. **Write state to PROGRESS.md** after every phase (decisions, data formats, next action). After a compaction,

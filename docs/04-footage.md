@@ -3,7 +3,7 @@
 A 30-minute film needs a lot of material. Make a shot need list per chapter; every chapter needs its own
 pictures; do not repeat one still many times.
 
-## Where to look (probe each with ONE small request before investing time)
+## Where to look (check access, diagnose failures, then choose sources)
 | Source | Notes from production |
 |---|---|
 | NASA Image & Video Library (`vf nasa search/fetch`) | public domain, excellent originals; no endorsement implied |
@@ -12,9 +12,24 @@ pictures; do not repeat one still many times.
 | US National Archives, Library of Congress, .gov (NOAA, USGS…), ESA/ESO, EU AV Service | public domain or open; check each item |
 | Museums open access (Met, AIC, Cleveland, Smithsonian, Rijksmuseum) | art, artefacts |
 | National archives of the country concerned (e.g. Japan Search, ColBase, NDL, GSI, kantei.go.jp) | local material |
-| YouTube / Vimeo (yt-dlp) | news, reports, CC-licensed clips — **cloud IPs are usually blocked (bot check / 403)**: probe once; if blocked, move on, never use cookies, proxies or other IPs |
+| YouTube / Vimeo (yt-dlp) | news, reports and CC-licensed clips: when relevant, actually search/test with `yt-dlp` in the current environment. Do not infer access from another machine or a single failed video. Never use cookies, proxies or other IPs to bypass blocking. |
 | Newspapers / official sites | screenshot headline + photo + masthead + date (group B) |
 | Free stock (Pexels, Mixkit, Coverr, Pakutaso) | generic background only, never as a substitute for the real thing |
+
+## Access checks and bounded recovery
+- Select sources by relevance to the shot need, not by which source has a built-in helper. For relevant
+  YouTube material, run an actual `yt-dlp` search/metadata check before ruling it out; for example:
+  `yt-dlp --skip-download --dump-single-json "ytsearch3:<topic keywords>" > research/youtube_candidates.json`.
+  Inspect a compact summary, then test selected URLs; metadata success alone does not confirm media download.
+- Start with a small check. On failure, inspect the error and distinguish an unavailable/private item,
+  outdated tool or missing dependency, transient network failure and actual access denial.
+- Apply legitimate fixes that fit the error: update `yt-dlp` when outdated, install reported dependencies,
+  retry a transient failure with backoff, or test a different relevant public URL. Use a bounded recovery
+  budget (up to three diagnostic/recovery attempts per source pass); stop retrying an explicitly denied
+  resource. Do not treat one failed item as proof the whole service is unusable.
+- Preserve existing source-specific rate limits and Retry-After requirements. Do not use cookies, proxies
+  or IP changes to bypass blocking. If access still fails, log the commands, concise errors and fixes tried
+  in PROGRESS.md/shotlist, switch to another relevant source and continue the project.
 
 ## Video scouting
 ```bash
@@ -25,13 +40,14 @@ $VF media contact assets/ia/film.mp4 2 300 420   # dense sheet for a promising r
 The renderer never crosses a cut or plays into a fade-to-black; if a take is too short it slows it down,
 and preflight errors below 0.6×. Choose in-points inside clean ranges.
 
-### Scouting sub-agent (contact sheets never enter your own context)
+### Scouting review (prefer sub-agents; use small batches yourself if unavailable)
 > You are scouting footage for a documentary about <TOPIC>. Look at these contact sheets (each tile is labelled
 > with its time in the source): <paths>. Source file: <path>, cut/black data: assets/scenes/<stem>.json.
 > Return a markdown table: `| start–end (s) | what is visible | people (only if certain) | burned-in text/logos
 > | quality 1–5 | usable for (chapter/topic) |`. Be literal: describe only what you see. Flag watermarks,
 > stock-house logos and timecodes. No commentary beyond the table and a 3-line summary.
-Merge their tables into `research/shotlist.md`.
+Merge their tables into `research/shotlist.md`. If sub-agents are unavailable or fail, use the same
+checklist yourself on small batches and save the table; do not skip scouting.
 
 ## Rights groups
 - **A** open archives, free use (public domain, CC0, CC BY/BY-SA with attribution).

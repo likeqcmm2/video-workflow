@@ -66,7 +66,8 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
 - Thiết kế riêng màu, font, nhịp và chuyển động cho từng video; tỷ lệ tư liệu thật là khoảng cho toàn phim.
 - Đồ hoạ/animation ưu tiên **Remotion + SVG**. Python chỉ khi Remotion không đáp ứng yêu cầu cụ thể,
   ghi lý do vào PROGRESS.md. Tích hợp bằng `anim:` / `overlay=anim:` (docs/08).
-- Ảnh scouting/review do sub-agent xem; dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
+- Ưu tiên sub-agent xem ảnh scouting/review; khi không khả dụng, agent chính xem theo lô nhỏ và lưu kết quả
+  ra file. Dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
 - Wikimedia dùng thumbnail chuẩn và video chuyển mã qua client chung; bí mật lấy từ biến môi trường.
 
 ## Kiểm tra engine
@@ -78,8 +79,9 @@ bash tests/run_tests.sh      # không cần API key; dựng video giả lập v�
 
 ## Giới hạn cần biết
 
-- YouTube thường chặn IP của máy chủ cloud nên không tải được. Workflow không vượt chặn (không dùng cookie,
-  proxy hay đổi IP).
+- Khi YouTube có tư liệu phù hợp, phải thử tìm và kiểm tra bằng `yt-dlp` trên môi trường hiện tại; không
+  giả định nguồn bị chặn vì kinh nghiệm ở máy khác. Xử lý lỗi theo docs/04; không dùng cookie, proxy hay đổi IP
+  để vượt chặn.
 - AI không tự nghe được âm thanh. Giọng đọc được kiểm tra bằng phiên âm ngược, nhạc và âm lượng được đo bằng số
   liệu; bạn vẫn nên nghe lại trước khi đăng.
 - Quyền sử dụng tư liệu nhóm C (bản tin, phim có bản quyền) luôn cần bạn kiểm tra lại (`sources.md`).

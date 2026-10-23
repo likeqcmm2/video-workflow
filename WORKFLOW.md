@@ -39,7 +39,8 @@ cd projects/<slug>
 - Write the profile at the top of script.md (docs/01): structure with % per part, hook anatomy sentence by
   sentence, narrator voice, sentence stats, signature phrases, retention devices, pacing, 5–8 must-keep rules,
   3–5 never-do rules.
-- After this the sample is not re-read; the profile is the reference (context budget).
+- Use the profile as the reference. Re-read a relevant sample passage when needed to resolve a gap or
+  verify a detail, then update the profile; avoid reloading the full sample (context budget).
 
 ## Phase 2 — Director notes (before writing narration)
 - From the title: genre AND sub-genre, era, place, the material that exists, the emotion. docs/02's table is
@@ -54,11 +55,13 @@ cd projects/<slug>
   with real content. Never pad.
 
 ## Phase 4 — Footage scouting (before the script is final)
-- Per chapter: what must be seen. Search wide (docs/04 list), probe each source with ONE small request
-  before investing (cloud IPs get blocked: YouTube usually is; Commons originals may 429 — use thumbnails).
+- Per chapter: what must be seen. Search wide (docs/04 list); make a small initial check, diagnose failures
+  and try bounded legitimate fixes before abandoning a source. When YouTube has relevant material, actually
+  search/test it with `yt-dlp` in the current environment; do not assume it is blocked. Use Commons thumbnails.
 - Every downloaded video: `$VF media scan <file>` (cuts + black/fade ranges) and a contact sheet
-  (`$VF media contact`). Contact sheets are read by **scouting sub-agents**, who return shot lists
-  (time ranges, content, people, burned-in text, quality). You keep only `research/shotlist.md`.
+  (`$VF media contact`). Prefer **scouting sub-agents** to return shot lists (time ranges, content, people,
+  burned-in text, quality). If unavailable or failing, inspect small batches yourself and save the same
+  findings to `research/shotlist.md`.
 - Register reusable videos in project.yaml `assets` (path, credit, link, license, rights_check, crop, desat).
 - Rights groups A/B/C and the `copyright_level` rules: docs/04.
 - Gate: every chapter has the pictures the director planned for it (archive, graphics or animation — by
@@ -74,7 +77,8 @@ cd projects/<slug>
 - Self-check three random passages against the profile's must/never rules; no long sentence copied.
 
 ## Phase 6 — Voice
-- `$VF tts` (background). Then `$VF tts-report`. For each scene under 0.93: read text vs asr in
+- `$VF tts` (prefer background; execution fallback: CLAUDE.md). Then `$VF tts-report`.
+  For each scene under 0.93: read text vs asr in
   `out/vo/<id>.json`; fix with `voice.readings` (katakana/hiragana) or `tts_overrides.yaml`, `$VF tts <ids>`;
   if the take is right and only the transcription differs (kanji vs kana), `$VF tts-accept <id>`.
 - Record the total voice duration in PROGRESS.md.
@@ -94,7 +98,7 @@ cd projects/<slug>
 ```bash
 $VF plan                 # timeline + subtitles; prints asset errors
 $VF preflight            # MUST be 0 errors. Warnings: read each, fix or consciously accept (note why)
-$VF render --changed     # background; parallel chapters; subtitles burned in; one encode
+$VF render --changed     # prefer background; execution fallback: CLAUDE.md; parallel chapters, subtitles burned in
 ```
 - While chapters render: write `sources_facts.md`, prepare the report, start reviewing finished chapters.
 
@@ -102,10 +106,12 @@ $VF render --changed     # background; parallel chapters; subtitles burned in; o
 - Music per chapter (docs/09), voice levelled, ducking, loudness −16 LUFS: `$VF audio`.
 
 ## Phase 10 — Review, at least two rounds (docs/10)
-- Round 1: `$VF sheets <chapters> --every 3` → spawn review sub-agents (≤ 2 chapters each, template in docs/10)
-  → they return JSON issue lists → fix → `$VF plan && $VF preflight && $VF render --changed`.
+- Round 1: `$VF sheets <chapters> --every 3` → prefer review sub-agents (≤ 2 chapters each, docs/10).
+  If unavailable or failing, review small batches yourself and save JSON issue lists. Then fix →
+  `$VF plan && $VF preflight && $VF render --changed`.
 - Round 2: `$VF final && $VF qa` (0 errors) + sheets at 3 s for every chapter changed since round 1 + a
-  6 s skim of the whole film by a fresh sub-agent. Repeat until a round finds nothing to fix.
+  6 s skim of the whole film, preferably by a fresh sub-agent. If unavailable, the main agent performs a
+  separate second pass in small batches (docs/10). Repeat until a round finds nothing to fix.
 - Style comes first: does it fit this genre, era and story; does anything look generic; is the real/graphics
   share of the whole film inside the range (chapters are free; preflight shows them for information)?
 
