@@ -49,7 +49,8 @@ secrets/variables (in Claude Code on the web: environment settings). Wikimedia w
 (slower) when its credentials are missing — note that in PROGRESS.md and continue.
 
 ## Sub-agents (use them — they keep images and raw search results out of your context)
-- **Visual review** of rendered sheets (Phase 10) — always delegated, never read review sheets yourself.
+- **Visual review** of rendered sheets (Phase 10) — prefer delegation. If sub-agents are unavailable or fail,
+  the main agent reviews small batches, saves issue lists to files and continues; do not skip review.
 - **Footage scouting** contact sheets (Phase 4) and **research fan-out** (Phase 3).
 Prompt templates: `docs/10-qa-review.md`, `docs/04-footage.md`, `docs/03-research.md`.
 Sub-agents return compact text/JSON; they never edit project files unless told to.
@@ -60,8 +61,10 @@ Sub-agents return compact text/JSON; they never edit project files unless told t
                  media scan|contact|images|gif2mp4 | commons ... | nasa ... | ia ... | music fetch
                  plan | preflight | gfx-preview | render --changed | audio | final | qa | sheets | stats | sources
 ```
-Long jobs (`tts`, `render`, `final`) run in the background (`run_in_background`); you get notified when they
-finish — do not poll, do other work meanwhile (writing sources/facts, reviewing finished chapters).
+Run long jobs (`tts`, `render`, `final`) in the background and use completion notifications when supported.
+If notifications are unavailable, check process status and short log tails at spaced intervals (start around
+30–60 s and back off for long jobs). If background execution is unavailable, use a foreground execution
+session with bounded waits. Do other independent work when possible; avoid rapid or repetitive polling.
 
 ## State survives context resets only in files
 Keep `projects/<slug>/PROGRESS.md` current after every phase: what is done, decisions, the next action,

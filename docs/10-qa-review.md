@@ -1,4 +1,4 @@
-# Phase 10 — QA and review (machines first, then eyes — eyes belong to sub-agents)
+# Phase 10 — QA and review (machines first, then visual review)
 
 ## Automated checks
 `vf preflight` (before rendering) — must end with **0 errors**:
@@ -26,8 +26,10 @@ loudness (−16 LUFS ±1, true peak), black frames during photo/footage shots.
 ```bash
 $VF sheets CH1 CH2 CH3 --every 3      # 4x5 tiles per sheet, each labelled "m:ss  S123"; manifest JSON beside them
 ```
-Spawn review sub-agents in parallel, **≤ 2 chapters each** (≈ 4–8 sheets per agent). You never open the
-sheets yourself — you read their issue lists. Prompt template:
+Prefer review sub-agents in parallel, **≤ 2 chapters each** (≈ 4–8 sheets per agent), returning compact
+issue lists. If sub-agents are unavailable or fail, the main agent reviews small batches (for example 1–2
+sheets at a time), saves JSON findings to files and keeps only a summary in context. Complete the same
+checks and coverage; do not skip review. Prompt/checklist:
 
 > You are a demanding viewer reviewing a <GENRE> documentary for <AUDIENCE>. Director notes: <3–5 lines from
 > script.md: genre, era, visual direction, pace, real-footage range, don'ts>. Look at every tile of these review sheets:
@@ -49,9 +51,10 @@ sheets yourself — you read their issue lists. Prompt template:
 Then: fix (script VIS / options / assets / custom graphics) → `vf plan && vf preflight && vf render --changed`.
 
 **Round 2**: `vf final && vf qa` (0 errors) + sheets at 3 s for every chapter re-rendered since round 1 + a
-6 s skim of the whole film (`vf sheets all --every 6`) by a FRESH sub-agent (fresh eyes catch what the first
-missed). Repeat until a round returns nothing above low severity. Re-read the final script against the style
-profile and re-run `vf count` (still ≥ minimum after edits?).
+6 s skim of the whole film (`vf sheets all --every 6`), preferably by a FRESH sub-agent. If unavailable,
+the main agent performs a separate second pass in small batches against the same checklist, then compares
+with round 1 issues. Repeat until a round returns nothing above low severity. Re-read the final script
+against the style profile and re-run `vf count` (still ≥ minimum after edits?).
 
 ## Accepting a warning
 Some warnings are judgement calls (e.g. slowed smoke footage at 0.7×, a 500 px portrait used contained).

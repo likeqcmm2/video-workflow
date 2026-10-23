@@ -1,7 +1,8 @@
 # Phase 1 — Style profile (the sample script decides the WORDS)
 
 Do this first. Read the whole sample once. Then write a "Style profile" section at the top of script.md.
-After that, work from the profile — do not re-read the sample (it costs context every time).
+After that, work from the profile. If it is incomplete or a style detail needs verification, re-read only
+the relevant passage and update the profile; avoid repeatedly loading the whole sample.
 
 ## Measure, don't estimate
 ```bash
