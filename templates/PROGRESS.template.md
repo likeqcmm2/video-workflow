@@ -12,6 +12,9 @@
 
 ## Graphics / animation authoring
 - Default: Remotion + SVG.
+- Render host: available CPU / affinity or quota / available RAM / current load / output-disk capacity.
+- Clip rendering: parallel jobs J / per-job concurrency C / measured throughput and memory / tuning decisions.
+- Clip batch: completed outputs / failed jobs / next queued clips.
 - Fallbacks (if any): requirement → attempted Remotion approach → why Remotion cannot meet it → chosen tool.
 
 ## Open issues / pending downloads

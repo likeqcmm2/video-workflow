@@ -46,6 +46,28 @@ PROGRESS.md before using Python or another specialist authoring tool.
   glue, not permission to author chapter-card visuals in Python. The renderer's existing ASS subtitles,
   credits, stamps and lower thirds remain engine text layers.
 
+### Server-aware parallel clip rendering
+- Before starting a graphics/clip/animation render batch, inspect the machine that will actually render:
+  logical CPUs available to the process (including affinity and container/VM CPU quotas), available RAM,
+  current CPU/memory load and output-disk capacity. For remote rendering, run these checks on the server.
+- Queue independent clips as separate jobs and run several at once when the host has capacity. Avoid
+  sequential-only rendering on a capable server; if there is only one clip or parallel jobs reduce measured
+  throughput, use the allocation that finishes the work fastest.
+- Control both **J = simultaneous clip jobs** and **C = render concurrency within each job**. Do not launch
+  many jobs that each assume they own the entire machine. As a starting heuristic, distribute available
+  CPU capacity across J jobs; J × C is a planning estimate, not an exact thread count or a guarantee of CPU
+  usage. Browser, decoder and encoder work also consume resources. Use settings supported by the installed
+  renderer version, and budget for any concurrent chapter renders or other server workloads.
+- Measure one or two representative clips to estimate per-job memory and throughput, then increase J/C
+  while CPU has headroom and total throughput improves. Reduce concurrency if memory pressure, swapping,
+  render failures, disk contention or worse throughput appears. Aim for high sustained useful CPU usage
+  and the shortest total batch time; do not lower resolution, FPS, quality or animation detail for speed.
+- Give each job unique output, temporary and log paths. Collect exit status, verify outputs and keep
+  completed clips so only failed or changed clips need another render. Use the background/status handling
+  in CLAUDE.md; no need to wait for one independent clip before starting every other clip.
+- Record server capacity/limits, J, C, memory observations and any tuning in PROGRESS.md. This clip-render
+  allocation is separate from `vf render -j`, which controls the later chapter render jobs.
+
 ### Supported integration paths
 
 **Python fallback only — `custom_gfx.py`** (`gfx:<name>`; start from templates/custom_gfx.template.py).
