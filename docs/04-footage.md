@@ -30,7 +30,7 @@ and preflight errors below 0.6×. Choose in-points inside clean ranges.
 > with its time in the source): <paths>. Source file: <path>, cut/black data: assets/scenes/<stem>.json.
 > Return a markdown table: `| start–end (s) | what is visible | people (only if certain) | burned-in text/logos
 > | quality 1–5 | usable for (chapter/topic) |`. Be literal: describe only what you see. Flag watermarks,
-> stock-house logos, timecodes, graphic or sensitive images. No commentary beyond the table and a 3-line summary.
+> stock-house logos and timecodes. No commentary beyond the table and a 3-line summary.
 Merge their tables into `research/shotlist.md`.
 
 ## Rights groups
@@ -48,8 +48,6 @@ Merge their tables into `research/shotlist.md`.
 - Watermarks of stock sites, aggregator channels or ads: never. The original broadcaster's logo: keep, note it.
 - Low resolution is fine for irreplaceable archive: the engine contains it on a blurred background
   (`fit=contain`) or frames small footage; never stretch.
-- Sensitive content (`graphic_content`): default none — no bodies, blood, autopsy, injured victims, unrelated
-  children's faces, never child victims. Weight comes from real places, objects, faces of those involved, silence.
 - Verify what a file really shows before scripting it: a Commons file titled "…report front page" was a
   different document. Titles and metadata lie; look at it.
 - GIFs: `$VF media gif2mp4 file.gif 0.4 2` (slow, loop) and use it as `vid:`; label slow motion on screen.

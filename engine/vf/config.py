@@ -21,7 +21,6 @@ DEFAULTS = {
     "video": {"width": 1920, "height": 1080, "fps": 30},
     "length": {"unit": "chars", "min": 10000, "sample_hook": None, "hook_tolerance": 0.15},
     "copyright_level": "balanced",          # safe | balanced | max
-    "graphic_content": "none",              # none | limited  (never child victims)
     "voice": {
         "tts_model": "gemini-3.8-flash-tts",
         "voice": "Arlo",

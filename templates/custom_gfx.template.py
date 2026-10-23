@@ -11,7 +11,7 @@ Design any approved fallback for THIS film (genre, era, material).
 
 Technical rules (preflight checks them): draw ALL text with text() so its box is measured; keep text >= 5 % from
 every edge and above the subtitle block (~y 887 at 1080p) unless the scene has subs=off / allow_low=1; every
-character must exist in the font; cite data sources on screen; label reconstructions as reconstructions.
+character must exist in the font; cite data sources on screen.
 If design.chapter_card.enabled is true, define the card graphic named in design.chapter_card.gfx (p: num, title).
 Preview: ../../scripts/vf gfx-preview <name> k=v t=2 dur=5
 """

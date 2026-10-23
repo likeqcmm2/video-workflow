@@ -112,8 +112,7 @@ def sources():
         for f in sorted(x for x in files if x):
             L.append(f"- {Path(f).stem.replace('_', ' ')} — {mus.get('credit', 'licence: see project.yaml music.credit')}")
     L += ["\n## Other\n", "- Fonts: Noto (SIL Open Font License).",
-          "- Map data: Natural Earth (public domain)." if any(e["path"] == "map" for e in tl["timeline"] if e["type"] == "shot") else "",
-          "- Code-built graphics and reconstructions are labelled on screen as reconstructions where they imitate documents."]
+          "- Map data: Natural Earth (public domain)." if any(e["path"] == "map" for e in tl["timeline"] if e["type"] == "shot") else ""]
     Path("sources_assets.md").write_text("\n".join(x for x in L if x is not None) + "\n")
     facts = Path("sources_facts.md")
     Path("sources.md").write_text(Path("sources_assets.md").read_text() + ("\n" + facts.read_text() if facts.exists() else ""))

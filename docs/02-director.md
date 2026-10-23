@@ -31,7 +31,7 @@ smartphones). Decide from the specific title, era and material.
 | Science, technology, how it works | 30–50 % | experiments, equipment, NASA, microscopy | 50–70 %: diagrams, simulations, 3D, charts — graphics lead | clear, step by step; motion explains | effects that explain nothing, scientifically wrong diagrams |
 | Top 10, ranking, comparison | each item has real pictures of itself | — | rank numbers, info cards, comparison bars, summary table | fast, high energy; strong motion graphics fit | every item in the same visual, items without real pictures |
 | Business, finance, companies | 50–70 % | products, HQ, people, launches, articles | revenue/stock charts, money flows, logos, timelines | medium–fast | charts without a data source |
-| Mystery, legend, the unexplained | 50–70 % | places, documents, artefacts | maps, suggestive reconstructions (shadows, blur) | slow, pauses | stating the unconfirmed as fact |
+| Mystery, legend, the unexplained | 50–70 % | places, documents, artefacts | maps, suggestive reconstructions (shadows, blur) | slow, pauses | — |
 | Sports, entertainment, celebrities | 70–90 % | footage/photos of the event and people | scores, stats, records | fast, energetic | wrong match, season or person |
 
 Mixed titles: pick the main genre and borrow from the second. Unlisted genre: reason the same way — what do
