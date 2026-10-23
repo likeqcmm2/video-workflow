@@ -15,7 +15,7 @@ Phases run in order. Each ends with a **gate**: do not start the next phase unti
 | 7 | Design system | design section in script.md, project.yaml design, custom_gfx.py / anim clips | every design decision filled, graphics previewed | docs/07, 08 |
 | 8 | Edit + render | out/ch_*.mp4 | `vf preflight` 0 errors before rendering | docs/08 |
 | 9 | Audio | out/mix.wav | music per chapter, voice clearly on top | docs/09 |
-| 10 | Review ×2 | issue lists, fixes | round 2 clean, `vf qa` 0 errors | docs/10 |
+| 10 | Review ×1 | issue list, fixes | one full review completed, fixes checked, `vf qa` 0 errors | docs/10 |
 | 11 | Deliver | video.mp4, script.md, sources.md, REPORT.md | report sent to the user | docs/11 |
 
 ---
@@ -105,14 +105,12 @@ $VF render --changed     # prefer background; execution fallback: CLAUDE.md; par
 ## Phase 9 — Audio
 - Music per chapter (docs/09), voice levelled, ducking, loudness −16 LUFS: `$VF audio`.
 
-## Phase 10 — Review, at least two rounds (docs/10)
-- Round 1: `$VF sheets <chapters> --every 3` → the main agent personally reviews all sheets in small
-  batches and saves JSON issue lists (docs/10); do not delegate review to sub-agents. Then fix →
-  `$VF plan && $VF preflight && $VF render --changed`.
-- Round 2: `$VF final && $VF qa` (0 errors) + sheets at 3 s for every chapter changed since round 1 + a
-  6 s skim of the whole film, all reviewed personally by the main agent in a separate second pass, using
-  small batches (docs/10). Follow-up reviews also remain with the main agent. Repeat until a round finds
-  nothing to fix.
+## Phase 10 — One review (docs/10)
+- `$VF final && $VF qa` → `$VF sheets all --every 3`. The main agent personally reviews all sheets in
+  small batches and saves JSON issue lists; do not delegate video review to sub-agents.
+- Fix identified issues → `$VF plan && $VF preflight && $VF render --changed` as needed → `$VF final && $VF qa`.
+  The main agent checks only corrected portions for visual fixes. No second full-video review or 6 s
+  whole-film skim is required. Resolve identified issues before delivery and record accepted low-severity notes.
 - Style comes first: does it fit this genre, era and story; does anything look generic; is the real/graphics
   share of the whole film inside the range (chapters are free; preflight shows them for information)?
 

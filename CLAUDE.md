@@ -49,9 +49,9 @@ secrets/variables (in Claude Code on the web: environment settings). Wikimedia w
 (slower) when its credentials are missing — note that in PROGRESS.md and continue.
 
 ## Sub-agents (use them — they keep images and raw search results out of your context)
-- **Visual review** of rendered video/sheets (Phase 10) must be performed personally by the main agent in
-  both rounds and any follow-up passes. Do not delegate video review to sub-agents. Review small batches
-  and save JSON issue lists to files; do not skip review.
+- **Visual review** of rendered video/sheets (Phase 10): one full review, performed personally by the main
+  agent. Do not delegate video review to sub-agents. Review small batches and save JSON issue lists to files.
+  Fix identified issues and check only the corrected portions; no second full-video review is required.
 - **Footage scouting** contact sheets (Phase 4) and **research fan-out** (Phase 3).
 Sub-agent prompts: `docs/04-footage.md`, `docs/03-research.md`. Main-agent review checklist: `docs/10-qa-review.md`.
 Sub-agents return compact text/JSON; they never edit project files unless told to.

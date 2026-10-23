@@ -13,6 +13,6 @@ $VF final && $VF qa && $VF stats && $VF sources
 
 Final message to the user (their language), short: duration; narration length; genre and visual direction;
 real-footage vs graphics ratio (`real_pct`); what was learned from the sample and applied; what the review
-rounds fixed; what the user must check before publishing — rights (C group, uncertain PD), audio (you cannot
+and targeted checks fixed; what the user must check before publishing — rights (C group, uncertain PD), audio (you cannot
 listen), approximate picture/word matches, places that differ from the sample's style.
 If asked to upload (e.g. rclone to Drive), verify size + MD5 after upload.
