@@ -2,7 +2,7 @@
 
 Repo này là "dây chuyền sản xuất" để một AI agent (Claude Code, model Opus) tự làm trọn một video tài liệu
 sẵn sàng đăng: phân tích script mẫu → xác định thể loại → nghiên cứu → tìm tư liệu → kịch bản → giọng đọc →
-dựng → tự review 2 vòng → xuất MP4 + kịch bản + nguồn + báo cáo.
+dựng → tự review 1 vòng → xuất MP4 + kịch bản + nguồn + báo cáo.
 
 Chỉ đọc `CLAUDE.md`, `WORKFLOW.md` và tài liệu của giai đoạn đang làm. Ví dụ cú pháp nằm ngay trong
 `docs/05-script-format.md`; không cần đọc engine hoặc bộ test để bắt đầu một video mới.
@@ -66,7 +66,8 @@ tests/               smoke test + negative test cho engine (bash tests/run_tests
 - Thiết kế riêng màu, font, nhịp và chuyển động cho từng video; tỷ lệ tư liệu thật là khoảng cho toàn phim.
 - Đồ hoạ/animation ưu tiên **Remotion + SVG**. Python chỉ khi Remotion không đáp ứng yêu cầu cụ thể,
   ghi lý do vào PROGRESS.md. Tích hợp bằng `anim:` / `overlay=anim:` (docs/08).
-- Cả hai vòng review video và các lượt kiểm lại bắt buộc do agent chính tự xem, không giao sub-agent.
+- Một vòng review video bắt buộc do agent chính tự xem, không giao sub-agent; nếu sửa lỗi, chỉ kiểm lại
+  những phần vừa sửa, không bắt buộc review toàn phim lần hai.
   Xem theo lô nhỏ, lưu danh sách lỗi ra file. Scouting vẫn ưu tiên sub-agent và tự làm khi không khả dụng.
   Dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
 - Wikimedia dùng thumbnail chuẩn và video chuyển mã qua client chung; bí mật lấy từ biến môi trường.

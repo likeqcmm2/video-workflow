@@ -2,8 +2,9 @@
 
 Read only the files needed for the current phase. Keep durable state and raw results on disk.
 
-1. **Main-agent video review; delegate scouting when available.** Both video-review rounds and follow-up
-   passes belong to the main agent; do not delegate them. Open review sheets in small batches (for example
+1. **Main-agent video review; delegate scouting when available.** One full video review and targeted checks
+   of corrected portions belong to the main agent; do not delegate them. No second full pass is required.
+   Open review sheets in small batches (for example
    1–2 at a time), save JSON findings and progress to files, and keep a compact summary in context.
    Contact sheets/scouting grids may go to sub-agents; if unavailable or failing, inspect small batches
    yourself and save findings. Complete all required coverage.

@@ -9,7 +9,7 @@
 
 ## Genre and visual direction
 ## Learned from the sample and applied
-## Fixed during review (round 1 / round 2)
+## Fixed during review (single full review + targeted checks of fixes)
 ## Please check before publishing
 1. Rights:
 2. Audio:

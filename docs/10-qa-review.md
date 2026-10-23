@@ -22,12 +22,13 @@
 `vf qa` (after `vf final`): size, fps, H.264 yuv420p, AAC, video = audio = timeline duration, exact frame count,
 loudness (−16 LUFS ±1, true peak), black frames during photo/footage shots.
 
-## Visual review (two rounds minimum)
+## Visual review (one full review)
 ```bash
-$VF sheets CH1 CH2 CH3 --every 3      # 4x5 tiles per sheet, each labelled "m:ss  S123"; manifest JSON beside them
+$VF final && $VF qa
+$VF sheets all --every 3      # 4x5 tiles per sheet, each labelled "m:ss  S123"; manifest JSON beside them
 ```
-**The main agent must personally perform both video-review rounds and every follow-up review. Do not
-delegate review of rendered video or review sheets to sub-agents.** Open small batches (for example 1–2
+**The main agent must personally perform one full video review and any targeted checks of corrected
+portions. Do not delegate review of rendered video or review sheets to sub-agents.** Open small batches (for example 1–2
 sheets at a time), inspect every tile, save JSON findings and reviewed coverage to files, and keep a compact
 summary in context. Complete all required checks and coverage; do not skip review. Main-agent checklist:
 
@@ -48,14 +49,12 @@ summary in context. Complete all required checks and coverage; do not skip revie
 > Save findings as JSON: `[{"scene": "S123", "t": "4:12", "severity": "high|medium|low", "type": "<check>",
 > "issue": "<what is wrong>", "fix": "<concrete suggestion>"}]` — `[]` if nothing. Be literal; do not invent.
 
-Then: fix (script VIS / options / assets / custom graphics) → `vf plan && vf preflight && vf render --changed`.
-
-**Round 2**: `vf final && vf qa` (0 errors) + sheets at 3 s for every chapter re-rendered since round 1 + a
-6 s skim of the whole film (`vf sheets all --every 6`). The main agent personally performs this separate
-second pass in small batches against the same checklist, then compares with round 1 issues. Any further
-review passes must also be performed by the main agent, without delegation. Repeat until a round returns
-nothing above low severity. Re-read the final script
-against the style profile and re-run `vf count` (still ≥ minimum after edits?).
+After review, fix identified issues (script VIS / options / assets / custom graphics). Run
+`vf plan && vf preflight && vf render --changed` as needed, then `vf final && vf qa` (0 errors).
+The main agent checks only corrected portions for visual fixes; do not repeat the entire film review or
+require a separate 6 s whole-film skim. Resolve identified issues above low severity and record accepted
+low-severity notes. Re-read the final script against the style profile and re-run `vf count` after narration
+edits (still ≥ minimum?). Record the completed review and fixes in PROGRESS.md and REPORT.md.
 
 ## Accepting a warning
 Some warnings are judgement calls (e.g. slowed smoke footage at 0.7×, a 500 px portrait used contained).
