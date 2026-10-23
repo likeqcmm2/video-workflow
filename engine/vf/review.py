@@ -1,4 +1,4 @@
-"""Review sheets for visual review (done by review sub-agents, see docs/10-qa-review.md).
+"""Review sheets for visual review performed by the main agent (see docs/10-qa-review.md).
 
   vf sheets CH3 [CH4 ...] [--every 3]     sheets for chapters (from out/ch_<id>.mp4, subtitles burned in)
   vf sheets all --every 6                  skim of the whole film
