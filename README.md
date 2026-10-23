@@ -4,8 +4,8 @@ Repo này là "dây chuyền sản xuất" để một AI agent (Claude Code, mo
 sẵn sàng đăng: phân tích script mẫu → xác định thể loại → nghiên cứu → tìm tư liệu → kịch bản → giọng đọc →
 dựng → tự review 2 vòng → xuất MP4 + kịch bản + nguồn + báo cáo.
 
-Chỉ đọc `CLAUDE.md`, `WORKFLOW.md` và tài liệu của giai đoạn đang làm. Ví dụ cú pháp ngắn nằm trong
-`examples/minimal/`; không cần đọc engine hoặc bộ test để bắt đầu một video mới.
+Chỉ đọc `CLAUDE.md`, `WORKFLOW.md` và tài liệu của giai đoạn đang làm. Ví dụ cú pháp nằm ngay trong
+`docs/05-script-format.md`; không cần đọc engine hoặc bộ test để bắt đầu một video mới.
 
 ## Cách dùng (mỗi video mới)
 
@@ -55,7 +55,6 @@ docs/                chi tiết từng giai đoạn + Wikimedia + quy tắc ti�
 engine/vf/           bộ máy dựng: TTS, timeline, phụ đề, đồ hoạ, render, âm thanh, QA tự động
 scripts/             setup.sh, vf (lệnh chính), fetch_fonts.py
 templates/           khung project.yaml, script.md, PROGRESS.md, báo cáo...
-examples/minimal/    ví dụ cú pháp ngắn, trung tính cho clip Remotion và footage
 tests/               smoke test + negative test cho engine (bash tests/run_tests.sh)
 ```
 
