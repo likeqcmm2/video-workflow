@@ -1,5 +1,4 @@
-"""Build the negative test project: the smoke project with six classic defects planted.
-Each defect cost the reference production real time; preflight must catch every one."""
+"""Build a negative test project with planted defects that preflight must identify."""
 import shutil
 from pathlib import Path
 

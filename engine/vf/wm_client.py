@@ -12,10 +12,8 @@ Credentials come ONLY from environment variables (never logged, never committed)
   WIKIMEDIA_USER_AGENT     e.g. "MyVideoBot/1.0 (https://commons.wikimedia.org/wiki/User:MyUser; bot)"
 Without credentials the client runs anonymously with the slower anonymous limits.
 
-Lesson learned: upload.wikimedia.org ORIGINALS answered 429 + Retry-After: 600 for a cloud IP while
-standard-width THUMBNAILS (thumb paths) and video TRANSCODES worked. So: images -> standard
-thumbnail widths only (download()), videos -> transcodes (video()). Never ask for originals unless
-there is no thumbnail and the file is tiny.
+Use standard-width thumbnails for images (download()) and transcodes for videos (video()).
+Prefer these over originals when they meet the quality requirements.
 """
 from __future__ import annotations
 

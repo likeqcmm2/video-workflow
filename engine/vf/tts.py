@@ -1,6 +1,6 @@
 """Voice-over: one Gemini TTS call per scene + ASR back-transcription check. Resumable.
 
-Rules learned the hard way (docs/06-voice.md):
+Voice generation rules (docs/06-voice.md):
   * Send ONLY the narration text. Style instructions inside the text are sometimes READ ALOUD.
   * Verify every scene by transcribing it back; retry up to voice.attempts; keep the best take.
   * If the main ASR model refuses (BlockedReason / empty), fall back to the next model in

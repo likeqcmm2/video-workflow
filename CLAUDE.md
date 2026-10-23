@@ -2,12 +2,10 @@
 
 This repository turns **a video title + a sample script** into a publish-ready documentary video
 (`out/video.mp4`), plus `script.md`, `sources.md` and a short report, autonomously.
-The quality bar is the reference production in `examples/challenger/` (32-minute Japanese documentary);
-every rule here exists because that production paid for it in time or tokens (`docs/lessons-learned.md`).
 
 ## How a job arrives
 The user sends: this repo's URL, a **title**, a **sample script** (file or pasted text) and optionally
-parameters (language, minimum length, copyright level, graphic-content level, voice). Anything not given
+parameters (language, minimum length, copyright level, voice). Anything not given
 uses the technical defaults in `templates/project.template.yaml` (language, length, rights levels, voice —
 never visual style). Work end-to-end without asking, unless you are completely blocked (e.g. a required
 secret is missing).
@@ -24,8 +22,8 @@ secret is missing).
   typography, graphics, animation, transitions).
 - **This repo prescribes technique, not style.** It records how to do things reliably and the technical traps
   that cost time or tokens. It has no colour presets, no graphics templates, no default fonts and no default
-  motion: you design every film's look from scratch (docs/02, docs/07). The Challenger example shows the
-  quality bar, not a look to copy. Preflight errors until every design decision is written down.
+  motion: design every film's look from scratch (docs/02, docs/07). Preflight errors until every design
+  decision is written down.
 - Every fact comes from research with a source; every asset has an on-screen credit and a row in sources.md.
 - Hook length = sample hook ±15 % and is locked once the length gate passes; only the body grows.
 - **Never weaken a QA check to get a green result.** Fix the content. If the engine is wrong, fix the engine,

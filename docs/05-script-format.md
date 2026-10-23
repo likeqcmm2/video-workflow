@@ -6,19 +6,18 @@ the script part (from `## HOOK`).
 ```markdown
 ## HOOK
 #### S001
-NAR: 1986年1月28日午前11時38分、アメリカ・フロリダ州の青空に、白い煙の柱がまっすぐに伸びていきました。
-VIS: TAPE @5:19.0 | stamp=1986年1月28日　午前11時38分（米東部時間）　フロリダ州
+NAR: この街では、毎日多くの人が列車を利用しています。
+VIS: vid:assets/footage/station.mp4 @0:05.0 | credit=映像：提供元
 
-#### S012 | pause=3.0
-NAR: 今回は、チャレンジャー号爆発事故の真相を解き明かしていきます。
-VIS: anim:assets/anim/title.mp4 @0:00.0      ← title designed and rendered with Remotion + SVG
+#### S002 | pause=1.0
+NAR: 今回は、その交通網の仕組みを見ていきます。
+VIS: anim:assets/anim/title.mp4 @0:00.0
 
 ## BODY
-### CH1 | 第1章 | 夢の宇宙船
+### CH1 | 第1章 | 路線のつながり
 #### S101
-NAR: まず、チャレンジャー号が飛び立つまでの時代背景から見ていきましょう。1981年4月、…
-VIS: nasa:S81-30498 | kb=in
-VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
+NAR: 地図の上で、二つの地点を結んでみましょう。
+VIS: anim:assets/anim/map_route.mp4 @0:00.0
 ```
 
 - Scene ids: `S0xx` hook, `S1xx` chapter 1, `S2xx` chapter 2 … (stable ids = stable voice files).
@@ -31,7 +30,7 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 ## VIS sources
 | Source | Meaning |
 |---|---|
-| `TAPE @12:34.5` | registered video `TAPE` (project.yaml `assets`), in-point m:ss.s |
+| `CLIP @12:34.5` | registered video `CLIP` (project.yaml `assets`), in-point m:ss.s |
 | `vid:assets/x.mp4 @1:02` | any local video (needs `credit=`) |
 | `img:assets/x.jpg` | any local image (needs `credit=`, or `credit=none` for own material) |
 | `nasa:S86-38989` | NASA image fetched with `vf nasa fetch` |
@@ -65,7 +64,7 @@ VIS: nasa:S81-30505 | stamp=1981年4月12日　コロンビア号（STS-1）
 
 Scene header options: `#### S123 | pause=1.5` (extra silence after the scene), `subs=off` (no subtitles for
 this scene — e.g. when the picture already shows the same words; nothing is hidden automatically).
-Chapter header options: `### CH3 | 第3章 | 運命の前夜 | card=none` (no chapter card), `card_dur=4`,
+Chapter header options: `### CH3 | 第3章 | 交通の変化 | card=none` (no chapter card), `card_dur=4`,
 `grade=<name>` (grade for every shot of the chapter).
 
 ## Length gate (hard stop before any voice work)
