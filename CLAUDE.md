@@ -41,6 +41,12 @@ secret is missing).
   `overlay=anim:<file>` (docs/08). Python engine orchestration, QA and thin adapters that load Remotion-rendered
   assets remain supported; this priority governs visual authoring, not the engine implementation language.
 
+- **Use the render server efficiently.** Before rendering graphics/clips/animation, inspect the actual
+  render host's available CPU, RAM, workload and container/VM limits. Render independent clips concurrently
+  when resources allow; tune both the number of clip jobs and per-job render concurrency using measured
+  throughput and memory (docs/08). Do not assume the local machine matches the server or render every clip
+  sequentially on a capable host. Preserve quality settings and record the chosen allocation in PROGRESS.md.
+
 ## Secrets (environment variables only)
 `GEMINI_API_KEY` (TTS + ASR), `WIKIMEDIA_USER_AGENT`, `WIKIMEDIA_BOT_USER`, `WIKIMEDIA_BOT_PASSWORD`.
 Check with `scripts/vf doctor` (prints set / not set, never values). Never echo, log, commit or write them

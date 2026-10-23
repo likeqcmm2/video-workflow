@@ -89,6 +89,9 @@ cd projects/<slug>
   script.md and project.yaml `design`; `$VF preflight` lists any decision still missing.
 - Author graphics and animation with **Remotion + SVG first** (docs/08), render clips to `assets/anim/`,
   and reference them with `anim:` / `overlay=anim:`. This includes simple maps, charts and cards.
+- Before rendering those clips, inspect the actual render server's available CPU/RAM, workload and resource
+  limits. Run independent clips in parallel when resources allow, tuning job count and per-job concurrency
+  to maximize useful CPU throughput without memory pressure (docs/08); save the allocation in PROGRESS.md.
 - Python drawing (`custom_gfx.py` / Pillow / Manim) is allowed only for a documented requirement Remotion
   cannot meet. Record the gap and attempted approach in PROGRESS.md; missing dependencies are not a reason.
 - Preview representative frames of every clip, including text bounds, glyphs and the subtitle safe area.
