@@ -37,7 +37,3 @@ smartphones). Decide from the specific title, era and material.
 Mixed titles: pick the main genre and borrow from the second. Unlisted genre: reason the same way — what do
 viewers of this genre expect, what makes them trust and stay. Animation clips made with external tools
 (`anim:`) and code graphics both count as graphics; footage and photos count as real.
-
-Reference: Challenger (1986 disaster, TV-era archive) planned 50–80 % real and landed at 60 %; its chapter
-on the unfilmed teleconference is mostly maps, documents and charts (21 % real) because that is what the
-story needed there — see examples/challenger.

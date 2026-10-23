@@ -1,7 +1,7 @@
 """Automated QA.  Machines check what machines can check, so human/agent review time goes to taste.
 
   vf preflight     before rendering: script gate, voice, every asset, every graphic, subtitles, ratio.
-                   Each check exists because the reference production lost hours to that exact defect.
+                   Checks cover technical correctness and asset readiness.
   vf qa            after `vf final`: container/codec/fps/size/duration, loudness, unexpected black in
                    footage, frame count.
 Full results: out/qa/*.json. Console output stays short (counts + first items).

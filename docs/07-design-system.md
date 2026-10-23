@@ -2,8 +2,8 @@
 
 Visual style has no default. Graphics and animation authoring uses Remotion + SVG first; Python drawing
 is permitted only for a documented requirement Remotion cannot meet (docs/08). Design the look from the director notes: genre and sub-genre, era, place,
-the material you actually found, the emotion. A 1940s newsreel story, a 1986 TV-archive disaster and a
-2020s tech story need different colour, texture, typography and motion, even inside one genre. Write the
+the material you actually found, the emotion. Different periods and source formats need different colour,
+texture, typography and motion, even inside one genre. Write the
 design into script.md ("Design system" section) and into `project.yaml design`. Preflight errors on any
 missing decision.
 

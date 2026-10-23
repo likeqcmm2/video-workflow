@@ -48,8 +48,7 @@ Merge their tables into `research/shotlist.md`.
 - Watermarks of stock sites, aggregator channels or ads: never. The original broadcaster's logo: keep, note it.
 - Low resolution is fine for irreplaceable archive: the engine contains it on a blurred background
   (`fit=contain`) or frames small footage; never stretch.
-- Verify what a file really shows before scripting it: a Commons file titled "…report front page" was a
-  different document. Titles and metadata lie; look at it.
+- Verify what each file shows before scripting it; titles and metadata are not enough.
 - GIFs: `$VF media gif2mp4 file.gif 0.4 2` (slow, loop) and use it as `vid:`; label slow motion on screen.
 
 After scouting compare with the director's ratio. Short of real material → search again with other keywords

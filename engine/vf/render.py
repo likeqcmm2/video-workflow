@@ -4,8 +4,7 @@
   vf render CH3 CH5          force these chapters
   vf render all              force everything
 Chapters are independent files encoded with identical settings, so `vf final` joins them with
-`concat -c copy` in about a minute (lesson: burning subtitles in a final full re-encode cost 67 min for
-every 1-second fix). Inputs of every chapter are hashed into out/render_state.json.
+`concat -c copy` without re-encoding video. Inputs of every chapter are hashed into out/render_state.json.
 """
 import hashlib
 import json

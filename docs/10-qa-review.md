@@ -9,12 +9,12 @@
 | fonts, libass | font family of subtitles/credits/stamps not installed; **glyphs missing** in a graphic's font | libass substitutes silently; decorative fonts lack kanji/diacritics |
 | length gate | hook ±15 %, total ≥ min, stamp line | hard rule of the brief |
 | voice | missing, placeholder, **narration edited after TTS**, similarity < 0.80 (error) / < 0.93 (warn) | stale or misread voice |
-| assets | missing files, unknown sources, GIF as still, **alt fallback in use** (warn) | a silent fallback once rendered an empty card |
+| assets | missing files, unknown sources, GIF as still, **alt fallback in use** (warn) | explicit fallback visibility |
 | credits | any photo/footage without on-screen credit | every asset must be credited |
-| video in-points | beyond file end, **on a cut or black range**, too-short takes (< 0.6× = error), **black frames inside the used segment** | two shots ran into a tape's fade-to-black |
+| video in-points | beyond file end, **on a cut or black range**, too-short takes (< 0.6× = error), **black frames inside the used segment** | avoid cut boundaries and fades |
 | stills | unreadable, too small for full-frame (`fit=contain`), static too long, same still > 3 times | soft or repetitive pictures |
-| graphics | render errors, **text outside the 5 % safe area**, **text in the subtitle block**, overlapping text | an overflowing label was found only by eye |
-| subtitles | > 2 lines, over-long lines, a line starting with 、。」ー or small kana, events < 0.6 s | broken Japanese line breaks needed six rounds of fixes |
+| graphics | render errors, **text outside the 5 % safe area**, **text in the subtitle block**, overlapping text | text legibility and layout |
+| subtitles | > 2 lines, over-long lines, a line starting with 、。」ー or small kana, events < 0.6 s | subtitle readability |
 | ratio | real-footage share of the WHOLE film outside `director.real_pct` (each chapter's share is printed as INFO only — chapters may be all archive or all animation) | genre drift of the film as a whole |
 | timing | scenes split by weight (sync to check by eye) | picture ≠ word |
 | Wikimedia | pending downloads | missing pictures |

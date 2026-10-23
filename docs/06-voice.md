@@ -12,9 +12,8 @@ Per scene: one TTS call (`voice.tts_model`, `voice.voice`) → wav → ASR trans
 first that answers) → similarity of normalised texts. Up to `voice.attempts` takes; the best is kept.
 Results: `out/vo/<id>.wav` + `.json` (text, asr, sim, dur, asr_model).
 
-## Rules (each learned in production)
-- **Send only the narration.** A style instruction placed in the text ("read calmly…") was sometimes read
-  aloud; all 229 scenes had to be regenerated. The voice's default documentary delivery was right.
+## Voice generation rules
+- **Send only the narration.** Do not prepend delivery instructions to the text sent for speech synthesis.
 - Numbers, dates and units are spelled out automatically from the digits in NAR (`engine/vf/textproc.py`:
   Japanese kanji numerals; other languages via num2words). Subtitles keep the digits.
 - Mispronunciations: add a reading in `project.yaml voice.readings` (katakana for foreign names, hiragana for

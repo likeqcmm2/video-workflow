@@ -66,7 +66,7 @@ def _cost(a, b, maxc, slack):
         return None
     c = abs(la - lb) * 0.5
     if a.rstrip()[-1:] in "、，,;；:：":
-        c -= 12            # a comma is the natural break (accepted look of the reference film) ...
+        c -= 12            # prefer a natural break after a comma ...
     elif a.rstrip()[-1:] in PARTICLE_END:
         c -= 6             # ... then the end of a particle phrase
     if min(la, lb) < 0.25 * (la + lb):

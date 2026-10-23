@@ -1,5 +1,5 @@
 """Resolve a VIS source to (kind, path, credit, meta). Missing media is an ERROR, never a silent
-placeholder (lesson: a GIF fallback once rendered an empty card that only a human review caught).
+placeholder.
 
 Sources
   gfx:<name>             code-built graphic from the project's custom_gfx.py

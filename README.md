@@ -4,8 +4,8 @@ Repo này là "dây chuyền sản xuất" để một AI agent (Claude Code, mo
 sẵn sàng đăng: phân tích script mẫu → xác định thể loại → nghiên cứu → tìm tư liệu → kịch bản → giọng đọc →
 dựng → tự review 2 vòng → xuất MP4 + kịch bản + nguồn + báo cáo.
 
-Chuẩn chất lượng là video mẫu trong `examples/challenger/` (phim tài liệu tiếng Nhật 32 phút). Mọi bài học
-từ lần sản xuất đó (post-mortem) đã được biến thành luật, công cụ và bước kiểm tra tự động trong repo.
+Chỉ đọc `CLAUDE.md`, `WORKFLOW.md` và tài liệu của giai đoạn đang làm. Ví dụ cú pháp ngắn nằm trong
+`examples/minimal/`; không cần đọc engine hoặc bộ test để bắt đầu một video mới.
 
 ## Cách dùng (mỗi video mới)
 
@@ -51,41 +51,24 @@ AI tự chạy `bash scripts/setup.sh <ngôn ngữ>` để cài ffmpeg, thư vi�
 ```
 CLAUDE.md            điểm vào cho AI (tự động được nạp)
 WORKFLOW.md          12 giai đoạn, mỗi giai đoạn có cổng kiểm tra (gate)
-docs/                chi tiết từng giai đoạn + Wikimedia + bài học + quy tắc tiết kiệm ngữ cảnh
+docs/                chi tiết từng giai đoạn + Wikimedia + quy tắc tiết kiệm ngữ cảnh
 engine/vf/           bộ máy dựng: TTS, timeline, phụ đề, đồ hoạ, render, âm thanh, QA tự động
 scripts/             setup.sh, vf (lệnh chính), fetch_fonts.py
 templates/           khung project.yaml, script.md, PROGRESS.md, báo cáo...
-examples/challenger/ video mẫu: cấu hình, kịch bản, đồ hoạ riêng, nguồn, báo cáo
+examples/minimal/    ví dụ cú pháp ngắn, trung tính cho clip Remotion và footage
 tests/               smoke test + negative test cho engine (bash tests/run_tests.sh)
 ```
 
-## Những gì đã cải tiến so với lần làm video Challenger
+## Quy tắc vận hành chính
 
-- **Xuất video**: không còn bước encode lại cả phim. Mỗi chương render một lần ở chất lượng cuối (phụ đề đốt
-  sẵn), ghép bằng `concat -c copy` trong ~1 phút. Sửa 1 lỗi chỉ render lại đúng chương bị ảnh hưởng (tự phát
-  hiện bằng hash). Lần trước: 2 lần xuất × 67 phút + 39 lượt render chương.
-- **QA tự động trước khi render** (`vf preflight`) bắt các lỗi mà lần trước chỉ phát hiện bằng mắt sau khi
-  render: màn hình đen/mờ dần trong footage, thẻ trống, chữ tràn khung, chữ đè vùng phụ đề, thiếu ghi nguồn,
-  giọng đọc lỗi thời sau khi sửa kịch bản, ngắt dòng phụ đề sai, footage bị làm chậm quá mức.
-- **Phụ đề tiếng Nhật** ngắt dòng bằng BudouX (không cắt giữa từ).
-- **Review ảnh do sub-agent làm**, ngữ cảnh chính không bị phình (lần trước 119 ảnh nằm trong ngữ cảnh).
-- **Wikimedia**: thumbnail chuẩn + bản video chuyển mã ngay từ đầu (file gốc bị 429).
-- **Bí mật** chỉ qua biến môi trường.
-- **Tổng quát**: đa thể loại, đa ngôn ngữ (ja, zh, ko, en, vi…). Repo **chỉ ghi kỹ thuật và các lỗi kỹ thuật
-  đã gặp**, không có preset màu, không có template đồ hoạ, không có font/chuyển động mặc định: AI tự thiết kế
-  màu, chữ, đồ hoạ, animation cho từng video theo thể loại, thời kỳ, chất liệu. Preflight báo lỗi nếu thiếu
-  quyết định thiết kế nào.
-- **Tỷ lệ footage thật / đồ hoạ** là khoảng min–max cho **toàn bộ video**, do AI chọn theo thể loại
-  (`director.real_pct`). Từng chương tự do: có chương toàn tư liệu, có chương toàn đồ hoạ/animation, miễn
-  visual hợp lời đọc và được sắp xếp có chủ đích. Preflight chỉ in tỷ lệ từng chương để tham khảo.
-- **Ưu tiên công cụ đồ hoạ/animation**: dùng **Remotion + SVG trước**, kể cả bản đồ, biểu đồ, timeline,
-  thẻ chữ và overlay đơn giản. Python chỉ khi Remotion không đáp ứng được yêu cầu cụ thể; ghi rõ yêu cầu,
-  cách đã thử và giới hạn vào PROGRESS.md. Thiếu cài đặt hoặc có sẵn helper Python không phải lý do chuyển.
-  Clip Remotion được đưa vào engine bằng `anim:` / `overlay=anim:` (docs/08).
-- **Animation ngoài** (Manim, Remotion, Blender, Three.js…) dùng được như clip `anim:`, kể cả lớp phủ có kênh
-  alpha; chuyển cảnh fade/dissolve; nhiều bảng màu (grade) theo chương hoặc từng shot.
-
-Chi tiết: `docs/lessons-learned.md`.
+- Render từng chương với phụ đề ở chất lượng cuối; ghép bằng `concat -c copy`. Dùng `render --changed`
+  để tái sử dụng chương còn hợp lệ; sửa cấu hình/code chung có thể làm nhiều chương cần render lại.
+- Chạy `vf preflight` trước render, xử lý lỗi và xem từng cảnh báo; chạy `vf qa` trên MP4 cuối.
+- Thiết kế riêng màu, font, nhịp và chuyển động cho từng video; tỷ lệ tư liệu thật là khoảng cho toàn phim.
+- Đồ hoạ/animation ưu tiên **Remotion + SVG**. Python chỉ khi Remotion không đáp ứng yêu cầu cụ thể,
+  ghi lý do vào PROGRESS.md. Tích hợp bằng `anim:` / `overlay=anim:` (docs/08).
+- Ảnh scouting/review do sub-agent xem; dữ liệu thô lưu file, chỉ đưa tóm tắt vào hội thoại.
+- Wikimedia dùng thumbnail chuẩn và video chuyển mã qua client chung; bí mật lấy từ biến môi trường.
 
 ## Kiểm tra engine
 

@@ -3,7 +3,7 @@
 All graphics draw on a 1920x1080 canvas (scaled if the project uses another size). Colours (C.<key>) and
 fonts (F(<role>, size)) are whatever the film's project.yaml `design.palette` / `design.fonts` define.
 Every text() call records its bounding box in BOXES so QA can verify that no text leaves the safe area,
-enters the subtitle block or overlaps other text (lesson: an overflowing label was only found by eye).
+enters the subtitle block or overlaps other text.
 A graphic may return RGBA: transparent pixels show the shot underneath when used as an overlay.
 """
 import math

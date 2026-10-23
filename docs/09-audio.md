@@ -3,10 +3,8 @@
 - Voice: levelled per scene (RMS), always clearly on top.
 - Music: free licence (Incompetech / Kevin MacLeod CC BY 4.0 is reliable: `vf music fetch "Dark Times"`;
   Free Music Archive with a compatible licence). Match the genre's emotion; long films change track per chapter
-  (`music.chapters`), with fades. Example from the reference film:
-  `HOOK Long Note Four · CH1 Echoes of Time · CH2 Long Note Two · CH3 Dark Times · CH4 Long Note Four (offset 120 s,
-  cut to silence from the break-up scene: cut_from_scene: S429) · CH5 Heartbreaking · CH6 Stages of Grief ·
-  CH7 Bittersweet · CH8 Lightless Dawn`.
+  (`music.chapters`), with fades. Use `offset` to choose the music in-point and `cut_from_scene` to
+  fade music to silence from a selected scene. Example: `{file: assets/music/B.mp3, offset: 30, cut_from_scene: S103}`.
 - Ducking: music 0.22 between sentences → 0.09 under narration (`level_between`, `level_under_voice`).
 - Silence is a tool: cut the music at the climax of a disaster film.
 - Sound effects by genre: true crime/history almost none; top 10/entertainment more.

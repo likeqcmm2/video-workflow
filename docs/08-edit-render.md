@@ -9,14 +9,9 @@ $VF audio                # out/mix.wav
 $VF final                # concat -c copy + AAC  (~1 minute, no re-encode)
 $VF qa                   # container, codec, fps, size, durations, frame count, loudness, black frames
 ```
-Why this shape: in the reference production subtitles were burned in a full-film re-encode at the end, so
-fixing 1.5 s of black cost a 67-minute export, and one 30-minute film needed 39 chapter renders. Now every
-chapter is encoded once at final quality (x264 crf 18, preset medium) with its subtitles; a fix re-renders
-only the chapters whose hash changed (timeline items, subtitles, assets, pixel-affecting engine code,
-custom_gfx.py, graphics.yaml, project.yaml).
-
-Render runs ~6 frames/s per job on 4 cores (2 jobs × 2 threads). A 30-minute film ≈ 60–80 min for a full
-render: start it in the background and keep working (sources, report, reviewing finished chapters).
+Render chapters once at final quality (x264 crf 18, preset medium), with subtitles burned in. Join them
+with stream copy. `render --changed` checks timeline items, subtitles, asset signatures and pixel-affecting
+engine/project files. Changes to shared configuration or code can invalidate multiple chapters.
 
 ## Timing rules the engine applies
 - Scene = lead 0.15 s + voice + gap 0.30 s (+1.2 last scene of a chapter, + `pause=` — give quote and
@@ -65,7 +60,6 @@ are still Remotion + SVG first. The following APIs describe the fallback, not th
 - `$VF gfx-list` lists your graphics; `$VF gfx-preview <name> k=v t=3 dur=6` writes one PNG — look at it.
 - Cost: frames are drawn in Python per frame; heavy per-pixel work (blurs, big numpy ops) every frame slows the
   render a lot — cache static layers with `functools.lru_cache` and only draw what moves.
-- Reference for the quality bar (not a style to copy): `examples/challenger/custom_gfx.py`.
 
 **Preferred clip integration — `anim:<file>`** rendered with Remotion + SVG.
 Use a specialist tool (Blender, Three.js, Manim, etc.) only for a documented requirement Remotion cannot

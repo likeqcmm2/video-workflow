@@ -2,7 +2,7 @@
 
 `vf media scan <video>` writes assets/scenes/<stem>.json = {"cuts": [...], "black": [[a, b], ...]}.
 The renderer never plays a shot past the next cut OR into a black/fade-out range: it slows the shot
-(>= 0.5x) instead. (Lesson: two shots ran into a tape's fade-to-black because only cuts were known.)
+(>= 0.5x) instead; preflight flags speeds below 0.6x.
 """
 import json
 import os

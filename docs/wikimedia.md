@@ -19,13 +19,12 @@ Client behaviour (already implemented — do not bypass):
   shortlisted files, saved to `assets/commons/metadata/`.
 - Logs: `assets/commons/logs/requests.jsonl` (no secrets); `vf commons stats` / `vf stats` for the report.
 
-Production lessons:
+Media selection:
 - **Images: standard thumbnail widths only** (20 40 60 120 250 330 500 960 1280 1920 3840) via `thumburl`;
   scouting 250/330, final 1920 (3840 only for deep zooms). Files narrower than the request: the largest standard
-  width below the original. From a cloud IP the ORIGINALS on upload.wikimedia.org returned 429 with
-  Retry-After 600 repeatedly while thumbnails worked — do not fight it, use thumbnails.
+  width below the original. Prefer standard thumbnails over originals when they meet the required quality.
 - **Videos: transcodes** (`vf commons video <title> 720` picks the best ≤ 720p WebM/MP4 derivative).
-- Verify the picture itself: titles/metadata can be wrong (a "report front page" was a Senate hearing cover).
+- Verify the picture itself rather than relying on titles or metadata.
 - Read the policies once per job if anything seems to have changed: Wikimedia_APIs/Rate_limits, Robot_policy,
   Common_thumbnail_sizes, API:Imageinfo, User-Agent_policy. Official policy wins over these numbers.
 
